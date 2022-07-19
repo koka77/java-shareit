@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface ItemService {
 
-    Optional<ItemDto> create(ItemDto itemDto);
+    Optional<ItemDto> create(long userId, ItemDto itemDto);
 
     void deleteById(Long id);
 

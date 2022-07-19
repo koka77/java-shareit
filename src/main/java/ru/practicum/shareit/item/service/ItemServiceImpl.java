@@ -1,11 +1,14 @@
 package ru.practicum.shareit.item.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -15,22 +18,30 @@ public class ItemServiceImpl implements ItemService {
 
     private final ItemMapper itemMapper;
     private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public ItemServiceImpl(ItemMapper itemMapper, ItemRepository itemRepository) {
+    public ItemServiceImpl(ItemMapper itemMapper, ItemRepository itemRepository, UserRepository userRepository) {
         this.itemMapper = itemMapper;
         this.itemRepository = itemRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
-    public Optional<ItemDto> create(ItemDto itemDto) {
+    public Optional<ItemDto> create(long userId, ItemDto itemDto) {
+        try {
+
+        itemDto.setOwner(userRepository.findById(userId).orElseThrow());
+        }catch (RuntimeException e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
         Item item = itemRepository.create(itemMapper.toItem(itemDto)).get();
         return Optional.of(itemMapper.toItemDto(item));
     }
 
     @Override
     public void deleteById(Long id) {
-
+        itemRepository.deleteById(id);
     }
 
     @Override
