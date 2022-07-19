@@ -12,7 +12,7 @@ public interface ItemRepository {
 
     void deleteById(Long id);
 
-    void update(Item item);
+    Item update(Item item);
 
     Collection<Item> findAll();
 

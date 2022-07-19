@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.repository;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.item.model.Item;
@@ -10,10 +11,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@Service
+@Repository
 public class InMemoryItemRepositoryImpl implements ItemRepository {
     private static Long currentId = 1L;
     private final static Map<Long, Item> ITEM_MAP = new HashMap<>();
+
 
     @Override
     public Optional<Item> create(Item item) {
@@ -32,9 +34,9 @@ public class InMemoryItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public void update(Item item) {
+    public Item update(Item item) {
         ITEM_MAP.put(item.getId(), item);
-
+        return ITEM_MAP.get(item.getId());
     }
 
     @Override

@@ -12,6 +12,7 @@ import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ItemServiceImpl implements ItemService {
@@ -45,17 +46,25 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Optional<ItemDto> updateById(Long id, ItemDto itemDto) {
-        return Optional.empty();
+    public Optional<ItemDto> updateById(Long userId, Long id, ItemDto itemDto) {
+
+        Item result = itemRepository.findById(id).orElseThrow();
+        if (!userId.equals(result.getId())){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        itemMapper.updateItemFromDto(itemDto, result);
+        itemRepository.update(result);
+        return Optional.of(itemMapper.toItemDto(result));
     }
 
     @Override
     public Collection<ItemDto> findAll() {
-        return null;
+        return itemRepository.findAll().stream().map(itemMapper::toItemDto).collect(Collectors.toSet());
     }
 
     @Override
     public Optional<ItemDto> findById(Long id) {
-        return Optional.empty();
+        ItemDto dto = itemMapper.toItemDto(itemRepository.findById(id).get());
+        return Optional.of(dto);
     }
 }

@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.Collection;
 import java.util.Optional;
@@ -23,7 +24,7 @@ public class ItemController {
 
 
     @PostMapping
-    public Optional<ItemDto> create(@NotBlank  @RequestHeader("X-Sharer-User-Id") long userId, @RequestBody ItemDto itemDto) {
+    public Optional<ItemDto> create(@NotBlank  @RequestHeader("X-Sharer-User-Id") long userId, @Valid @RequestBody ItemDto itemDto) {
         return itemService.create(userId, itemDto);
     }
 
@@ -33,8 +34,8 @@ public class ItemController {
     }
 
     @PatchMapping("/{itemId}")
-    public Optional<ItemDto> update(@PathVariable Long itemId, @RequestBody ItemDto itemDto) {
-        return itemService.updateById(itemId, itemDto);
+    public Optional<ItemDto> update(@NotBlank  @RequestHeader("X-Sharer-User-Id") long userId, @PathVariable Long itemId, @RequestBody ItemDto itemDto) {
+        return itemService.updateById(userId, itemId, itemDto);
     }
 
     @GetMapping
@@ -45,5 +46,10 @@ public class ItemController {
     @GetMapping("/{itemId}")
     public Optional<ItemDto> findById(@PathVariable Long itemId) {
         return itemService.findById(itemId);
+    }
+
+    @GetMapping("/search")
+    public Optional<ItemDto> search(@RequestParam String text) {
+        return Optional.empty();
     }
 }

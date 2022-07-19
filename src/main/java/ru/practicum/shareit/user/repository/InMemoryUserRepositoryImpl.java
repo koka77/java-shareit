@@ -24,7 +24,7 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<User> create(User user) {
-        if (USER_MAP.containsValue(user)){
+        if (USER_MAP.containsKey(user.getId())){
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
         user.setId(currentId++);

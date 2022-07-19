@@ -25,6 +25,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserDto> create(UserDto userDto) {
+        if (userRepository.findAll().stream().anyMatch(s-> s.getEmail().equals(userDto.getEmail()))){
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
+        }
         User user = userMapper.toUser(userDto);
         return Optional.of(userMapper.toUserDto(userRepository.create(user).get()));
     }

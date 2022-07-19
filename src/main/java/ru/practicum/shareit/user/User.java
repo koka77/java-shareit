@@ -14,10 +14,7 @@ import javax.validation.constraints.NotNull;
 @Data
 public class User {
 
-    @EqualsAndHashCode.Exclude
     private Long id;
-
-    @EqualsAndHashCode.Exclude
     private String name;
 
     @NonNull
