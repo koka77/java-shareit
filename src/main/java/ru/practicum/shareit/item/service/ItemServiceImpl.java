@@ -10,6 +10,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -49,7 +50,7 @@ public class ItemServiceImpl implements ItemService {
     public Optional<ItemDto> updateById(Long userId, Long id, ItemDto itemDto) {
 
         Item result = itemRepository.findById(id).orElseThrow();
-        if (!userId.equals(result.getId())){
+        if (!userId.equals(result.getOwner().getId())){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         itemMapper.updateItemFromDto(itemDto, result);
@@ -58,13 +59,22 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Collection<ItemDto> findAll() {
-        return itemRepository.findAll().stream().map(itemMapper::toItemDto).collect(Collectors.toSet());
+    public Collection<ItemDto> findAll(Long ownerId) {
+        return itemRepository.findAll().stream().filter(item -> item.getOwner().getId().equals(ownerId))
+                .map(itemMapper::toItemDto).collect(Collectors.toSet());
     }
 
     @Override
     public Optional<ItemDto> findById(Long id) {
         ItemDto dto = itemMapper.toItemDto(itemRepository.findById(id).get());
         return Optional.of(dto);
+    }
+
+    @Override
+    public Collection<ItemDto> searchItem(Long ownerId, String text) {
+        if (text.isEmpty()){
+            return new ArrayList<>();
+        }
+        return itemRepository.search(ownerId, text).stream().map(itemMapper::toItemDto).collect(Collectors.toSet());
     }
 }

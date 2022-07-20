@@ -6,10 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.item.model.Item;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryItemRepositoryImpl implements ItemRepository {
@@ -47,5 +45,15 @@ public class InMemoryItemRepositoryImpl implements ItemRepository {
     @Override
     public Optional<Item> findById(Long id) {
         return Optional.of(ITEM_MAP.get(id));
+    }
+
+    @Override
+    public List<Item> search(Long ownerId, String text) {
+        String preparedQuery = text.toUpperCase(Locale.ROOT).replaceAll("\\s+", "");
+        return ITEM_MAP.values().stream().filter(i -> (i.getName().replaceAll("\\s+", "")
+                + i.getDescription().replaceAll("\\s+", ""))
+                .toUpperCase(Locale.ROOT).contains(preparedQuery)
+                && i.getAvailable()
+        ).collect(Collectors.toList());
     }
 }

@@ -7,6 +7,7 @@ import ru.practicum.shareit.item.service.ItemService;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -24,7 +25,8 @@ public class ItemController {
 
 
     @PostMapping
-    public Optional<ItemDto> create(@NotBlank  @RequestHeader("X-Sharer-User-Id") long userId, @Valid @RequestBody ItemDto itemDto) {
+    public Optional<ItemDto> create(@NotBlank  @RequestHeader("X-Sharer-User-Id") long userId,
+                                    @Valid @RequestBody ItemDto itemDto) {
         return itemService.create(userId, itemDto);
     }
 
@@ -34,13 +36,14 @@ public class ItemController {
     }
 
     @PatchMapping("/{itemId}")
-    public Optional<ItemDto> update(@NotBlank  @RequestHeader("X-Sharer-User-Id") long userId, @PathVariable Long itemId, @RequestBody ItemDto itemDto) {
+    public Optional<ItemDto> update(@NotBlank  @RequestHeader("X-Sharer-User-Id") long userId,
+                                    @PathVariable Long itemId, @RequestBody ItemDto itemDto) {
         return itemService.updateById(userId, itemId, itemDto);
     }
 
     @GetMapping
-    public Collection<ItemDto> findAll() {
-        return itemService.findAll();
+    public Collection<ItemDto> findAll(@NotBlank  @RequestHeader("X-Sharer-User-Id") long ownerId) {
+        return itemService.findAll(ownerId);
     }
 
     @GetMapping("/{itemId}")
@@ -48,8 +51,9 @@ public class ItemController {
         return itemService.findById(itemId);
     }
 
-    @GetMapping("/search")
-    public Optional<ItemDto> search(@RequestParam String text) {
-        return Optional.empty();
+    @GetMapping("search")
+    public Collection<ItemDto> search(@NotBlank  @RequestHeader("X-Sharer-User-Id") long ownerId,
+                                      @RequestParam(required = false) String text) {
+        return itemService.searchItem(ownerId, text);
     }
 }
