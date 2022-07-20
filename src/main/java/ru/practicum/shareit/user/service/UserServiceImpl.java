@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.Collection;
@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserDto> create(UserDto userDto) {
-        if (userRepository.findAll().stream().anyMatch(s-> s.getEmail().equals(userDto.getEmail()))){
+        if (userRepository.findAll().stream().anyMatch(s -> s.getEmail().equals(userDto.getEmail()))) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
         User user = userMapper.toUser(userDto);
@@ -40,11 +40,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<UserDto> updateById(Long userId, UserDto userDto) {
 
-        if (userRepository.findAll().stream().anyMatch(s-> s.getEmail().equals(userDto.getEmail()))){
+        if (userRepository.findAll().stream().anyMatch(s -> s.getEmail().equals(userDto.getEmail()))) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
 
-        User user =  userRepository.findById(userId).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow();
 
         userMapper.updateUserFromDto(userDto, user);
         return Optional.of(userMapper.toUserDto(userRepository.updateById(userId, user)));

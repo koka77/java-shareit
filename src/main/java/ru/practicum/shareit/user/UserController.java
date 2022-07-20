@@ -3,15 +3,13 @@ package ru.practicum.shareit.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
 import javax.validation.Valid;
 import java.util.Collection;
 import java.util.Optional;
 
-/**
- * // TODO .
- */
 @RestController
 @RequestMapping(path = "/users")
 public class UserController {
@@ -47,5 +45,4 @@ public class UserController {
     public Optional<User> findById(@PathVariable Long userId) {
         return userService.findById(userId);
     }
-
 }

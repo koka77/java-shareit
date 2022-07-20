@@ -1,20 +1,29 @@
 package ru.practicum.shareit.booking.repository;
 
-import ru.practicum.shareit.booking.Booking;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.server.ResponseStatusException;
+import ru.practicum.shareit.booking.model.Booking;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+@Repository
 public class InMemoryBookingRepositoryImpl implements BookingRepository {
     private static Long currentId = 1L;
     private final static Map<Long, Booking> BOOKING_MAP = new HashMap<>();
 
     @Override
-    public void create(Booking booking) {
+    public Optional<Booking> create(Booking booking) {
+        if (BOOKING_MAP.containsValue(booking)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
+        }
+
         booking.setId(currentId++);
-        BOOKING_MAP.put(currentId, booking);
+        BOOKING_MAP.put(booking.getId(), booking);
+        return Optional.of(booking);
     }
 
     @Override

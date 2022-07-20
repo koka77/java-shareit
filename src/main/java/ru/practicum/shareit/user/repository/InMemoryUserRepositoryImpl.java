@@ -3,8 +3,8 @@ package ru.practicum.shareit.user.repository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.server.ResponseStatusException;
-import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.mapper.UserMapper;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,7 +24,7 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<User> create(User user) {
-        if (USER_MAP.containsKey(user.getId())){
+        if (USER_MAP.containsKey(user.getId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
         user.setId(currentId++);
@@ -39,7 +39,7 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
 
     @Override
     public User updateById(Long userId, User user) {
-        if (!USER_MAP.containsKey(userId)){
+        if (!USER_MAP.containsKey(userId)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
         User existUser = USER_MAP.get(userId);

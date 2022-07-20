@@ -1,6 +1,5 @@
 package ru.practicum.shareit.requests.repository;
 
-import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.requests.ItemRequest;
 
 import java.util.Collection;

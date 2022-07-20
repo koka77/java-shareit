@@ -1,14 +1,13 @@
 package ru.practicum.shareit.booking.repository;
 
-import ru.practicum.shareit.booking.Booking;
-import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.booking.model.Booking;
 
 import java.util.Collection;
 import java.util.Optional;
 
 public interface BookingRepository {
 
-    void create(Booking booking);
+    Optional<Booking> create(Booking booking);
 
     void deleteById(Long id);
 
