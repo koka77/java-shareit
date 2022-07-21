@@ -61,7 +61,7 @@ class UserControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content()
-                        .json(" [{\"id\":1,\"name\":\"update\",\"email\":\"update@user.com\"}," +
+                        .json("[{\"id\":1,\"name\":\"update\",\"email\":\"update@user.com\"}," +
                                 "{\"id\":2,\"name\":\"1update\",\"email\":\"1update@user.com\"}," +
                                 "{\"id\":3,\"name\":\"1update\",\"email\":\"all@all.la\"}]"));
     }

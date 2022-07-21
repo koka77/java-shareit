@@ -8,7 +8,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.practicum.shareit.AbstractControllerTest;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.user.UserController;
 import ru.practicum.shareit.user.service.UserService;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -23,14 +22,13 @@ class ItemControllerTest extends AbstractControllerTest {
 
     @BeforeAll
     private static void init(@Autowired UserService userService) {
-        userService.create(userDto);
+        if (userService.findAll().isEmpty()) {
+            userService.create(userDto);
+        }
     }
 
     @Test
     void shouldCreateItemCorrectly() throws Exception {
-
-
-
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/items")
                                 .content(objectToJson(itemDto))
@@ -41,14 +39,14 @@ class ItemControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content()
-                        .json("{\"id\":2,\"name\":\"Дрель\",\"description\":\"Простая дрель\",\"available\":true,\"owner\":{\"id\":1,\"name\":\"1update\",\"email\":\"1update@user.com\"},\"request\":null}"));
+                        .json("{\"id\":6,\"name\":\" for test2\",\"description\":\"Простая дрель\"," +
+                                "\"available\":true,\"owner\":{\"id\":1,\"name\":\"update\"," +
+                                "\"email\":\"update@user.com\"},\"request\":null}"));
     }
 
 
     @Test
     void shouldUpdateItemCorrectly() throws Exception {
-
-
         itemController.create(1l, itemDto);
         ItemDto updateItem = ItemDto.builder().name("Аккумуляторная дрель").build();
         mockMvc.perform(
@@ -61,19 +59,53 @@ class ItemControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content()
-                        .json("{\"id\":1,\"name\":\"Аккумуляторная дрель\",\"description\":\"Простая дрель\",\"available\":true,\"owner\":{\"id\":1,\"name\":\"1update\",\"email\":\"1update@user.com\"},\"request\":null}"));
+                        .json("{\"id\":1,\"name\":\"Аккумуляторная дрель\",\"description\":\"Простая дрель\",\"available\":true,\"owner\":{\"id\":1,\"name\":\"update\",\"email\":\"update@user.com\"},\"request\":null}"));
     }
 
     @Test
-    void shouldFindAllItemCorrectly() {
+    void shouldReturnAllItemCorrectly() throws Exception {
+        itemController.create(1l, itemDto);
+        itemDto.setName("for test1");
+        itemController.create(1l, itemDto);
+        itemDto.setName(" for test2");
+        itemController.create(1l, itemDto);
+        mockMvc.perform(MockMvcRequestBuilders.get("/items")
+                        .header("X-Sharer-User-Id", 1L)
+                )
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content()
+                        .json("[{\"id\":3,\"name\":\"Дрель\",\"description\":\"Простая дрель\"," +
+                                "\"available\":true,\"owner\":{\"id\":1,\"name\":\"update\"," +
+                                "\"email\":\"update@user.com\"},\"request\":null},{\"id\":2,\"name\":\"Дрель\"," +
+                                "\"description\":\"Простая дрель\",\"available\":true,\"owner\":{\"id\":1," +
+                                "\"name\":\"update\",\"email\":\"update@user.com\"},\"request\":null},{\"id\":1," +
+                                "\"name\":\"Аккумуляторная дрель\",\"description\":\"Простая дрель\"," +
+                                "\"available\":true,\"owner\":{\"id\":1,\"name\":\"update\"," +
+                                "\"email\":\"update@user.com\"},\"request\":null},{\"id\":4,\"name\":\"for test1\"," +
+                                "\"description\":\"Простая дрель\",\"available\":true,\"owner\":{\"id\":1," +
+                                "\"name\":\"update\",\"email\":\"update@user.com\"},\"request\":null},{\"id\":5," +
+                                "\"name\":\" for test2\",\"description\":\"Простая дрель\",\"available\":true," +
+                                "\"owner\":{\"id\":1,\"name\":\"update\",\"email\":\"update@user.com\"}," +
+                                "\"request\":null}]"));
     }
 
     @Test
-    void houldFindItemById() {
+    void shouldReturnItemById() throws Exception {
+        itemController.create(1l, itemDto);
+        mockMvc.perform(MockMvcRequestBuilders.get("/items/{itemId}", 1l))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content()
+                        .json("{\"id\":1,\"name\":\"Дрель\",\"description\":\"Простая дрель\"," +
+                                "\"available\":true,\"owner\":{\"id\":1,\"name\":\"update\"," +
+                                "\"email\":\"update@user.com\"},\"request\":null}"));
     }
 
     @Test
-    void houldSearchItem() {
+    void shouldSearchItem() {
     }
 
 
