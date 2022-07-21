@@ -105,11 +105,44 @@ class ItemControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void shouldSearchItem() {
+    void shouldSearchItem() throws Exception {
+        itemController.create(1l, itemDto);
+        mockMvc.perform(MockMvcRequestBuilders.get("/items/search", 1l)
+                        .param("text", "дРелЬ")
+                        .header("X-Sharer-User-Id", 1L)
+                )
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content()
+                        .json("[{\"id\":3,\"name\":\"Дрель\",\"description\":\"Простая дрель\"," +
+                                "\"available\":true,\"owner\":{\"id\":1,\"name\":\"update\"," +
+                                "\"email\":\"update@user.com\"},\"request\":null},{\"id\":7,\"name\":\" for test2\"," +
+                                "\"description\":\"Простая дрель\",\"available\":true,\"owner\":{\"id\":1," +
+                                "\"name\":\"update\",\"email\":\"update@user.com\"},\"request\":null}," +
+                                "{\"id\":2,\"name\":\"Дрель\",\"description\":\"Простая дрель\"," +
+                                "\"available\":true,\"owner\":{\"id\":1,\"name\":\"update\"," +
+                                "\"email\":\"update@user.com\"},\"request\":null}," +
+                                "{\"id\":6,\"name\":\" for test2\",\"description\":\"Простая дрель\"," +
+                                "\"available\":true,\"owner\":{\"id\":1,\"name\":\"update\"," +
+                                "\"email\":\"update@user.com\"},\"request\":null},{\"id\":1," +
+                                "\"name\":\"Аккумуляторная дрель\",\"description\":\"Простая дрель\"," +
+                                "\"available\":true,\"owner\":{\"id\":1,\"name\":\"update\"," +
+                                "\"email\":\"update@user.com\"},\"request\":null},{\"id\":4,\"name\":\"for test1\"," +
+                                "\"description\":\"Простая дрель\",\"available\":true,\"owner\":{\"id\":1," +
+                                "\"name\":\"update\",\"email\":\"update@user.com\"},\"request\":null},{\"id\":5," +
+                                "\"name\":\" for test2\",\"description\":\"Простая дрель\",\"available\":true," +
+                                "\"owner\":{\"id\":1,\"name\":\"update\",\"email\":\"update@user.com\"}," +
+                                "\"request\":null}]"));
     }
 
 
     @Test
-    void shouldDeleteItemByIdCorrectly() {
+    void shouldDeleteItemByIdCorrectly() throws Exception {
+        mockMvc.perform(
+                        MockMvcRequestBuilders.delete("/items/{itemId}", 1l)
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
     }
 }

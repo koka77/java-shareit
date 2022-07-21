@@ -72,7 +72,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Collection<ItemDto> searchItem(Long ownerId, String text) {
-        if (text.isEmpty()){
+        if (text == null ||text.isEmpty()){
             return new ArrayList<>();
         }
         return itemRepository.search(ownerId, text).stream().map(itemMapper::toItemDto).collect(Collectors.toSet());

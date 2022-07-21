@@ -27,8 +27,8 @@ public class ItemController {
     }
 
     @DeleteMapping("/{itemId}")
-    public void deleteById(@PathVariable Long userId) {
-        itemService.deleteById(userId);
+    public void deleteById(@PathVariable Long itemId) {
+        itemService.deleteById(itemId);
     }
 
     @PatchMapping("/{itemId}")
