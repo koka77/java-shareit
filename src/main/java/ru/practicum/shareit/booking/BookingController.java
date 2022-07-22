@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.service.BookingService;
 
-import java.util.Optional;
-
 /**
  * // TODO .
  */
@@ -24,8 +22,9 @@ public class BookingController {
         this.service = service;
     }
 
-    public Optional<BookingDto> create(@RequestHeader("X-Sharer-User-Id") long userId,
-                                       @RequestBody BookingDto bookingDto) {
+    public BookingDto create(@RequestHeader("X-Sharer-User-Id") long userId,
+                             @RequestBody BookingDto bookingDto) {
+
         return service.create(userId, bookingDto);
     }
 }

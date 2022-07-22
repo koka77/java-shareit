@@ -15,14 +15,14 @@ public class InMemoryItemRepositoryImpl implements ItemRepository {
 
 
     @Override
-    public Optional<Item> create(Item item) {
+    public Item create(Item item) {
         if (ITEM_MAP.containsValue(item)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
 
         item.setId(currentId++);
         ITEM_MAP.put(item.getId(), item);
-        return Optional.of(item);
+        return Optional.of(item).orElseThrow();
     }
 
     @Override
@@ -49,7 +49,7 @@ public class InMemoryItemRepositoryImpl implements ItemRepository {
     @Override
     public List<Item> search(Long ownerId, String text) {
         String preparedQuery = text.toUpperCase(Locale.ROOT).replaceAll("\\s+", "");
-        return ITEM_MAP.values().stream().filter(i -> (i.getName().replaceAll("\\s+", "")
+        return ITEM_MAP.values().stream().filter(i -> (i.getName().replaceAll("\\s+", "") + " "
                 + i.getDescription().replaceAll("\\s+", ""))
                 .toUpperCase(Locale.ROOT).contains(preparedQuery)
                 && i.getAvailable()

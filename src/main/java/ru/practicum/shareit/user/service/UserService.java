@@ -15,6 +15,6 @@ public interface UserService {
 
     Collection<User> findAll();
 
-    Optional<User> findById(Long id);
+    Optional<UserDto> findById(Long id);
 
 }

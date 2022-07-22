@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface ItemRepository {
 
-    Optional<Item> create(Item item);
+    Item create(Item item);
 
     void deleteById(Long id);
 

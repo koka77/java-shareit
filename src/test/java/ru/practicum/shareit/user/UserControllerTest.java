@@ -18,7 +18,6 @@ class UserControllerTest extends AbstractControllerTest {
     UserController userController;
 
 
-
     @Test
     void shouldCreateUserCorrectly() throws Exception {
 
@@ -53,6 +52,7 @@ class UserControllerTest extends AbstractControllerTest {
 
     @Test
     void shouldReturnAllUsersCorrectly() throws Exception {
+        
         userController.create(userDto);
         userDto.setEmail("all@all.la");
         userController.create(userDto);
@@ -68,6 +68,7 @@ class UserControllerTest extends AbstractControllerTest {
 
     @Test
     void shouldFindByIdCorrectly() throws Exception {
+
         mockMvc.perform(MockMvcRequestBuilders.get("/users/{userId}", 1l))
                 .andExpect(status().isOk())
                 .andDo(print())

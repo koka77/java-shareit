@@ -12,7 +12,6 @@ import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,15 +29,15 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Optional<ItemDto> create(long userId, ItemDto itemDto) {
+    public ItemDto create(long userId, ItemDto itemDto) {
         try {
 
-        itemDto.setOwner(userRepository.findById(userId).orElseThrow());
-        }catch (RuntimeException e){
+            itemDto.setOwner(userRepository.findById(userId).orElseThrow());
+        } catch (RuntimeException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        Item item = itemRepository.create(itemMapper.toItem(itemDto)).get();
-        return Optional.of(itemMapper.toItemDto(item));
+
+        return itemMapper.toItemDto(itemRepository.create(itemMapper.toItem(itemDto)));
     }
 
     @Override
@@ -47,15 +46,15 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Optional<ItemDto> updateById(Long userId, Long id, ItemDto itemDto) {
+    public ItemDto updateById(Long userId, Long id, ItemDto itemDto) {
 
         Item result = itemRepository.findById(id).orElseThrow();
-        if (!userId.equals(result.getOwner().getId())){
+        if (!userId.equals(result.getOwner().getId())) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         itemMapper.updateItemFromDto(itemDto, result);
         itemRepository.update(result);
-        return Optional.of(itemMapper.toItemDto(result));
+        return itemMapper.toItemDto(result);
     }
 
     @Override
@@ -65,14 +64,14 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Optional<ItemDto> findById(Long id) {
+    public ItemDto findById(Long id) {
         ItemDto dto = itemMapper.toItemDto(itemRepository.findById(id).get());
-        return Optional.of(dto);
+        return dto;
     }
 
     @Override
     public Collection<ItemDto> searchItem(Long ownerId, String text) {
-        if (text == null ||text.isEmpty()){
+        if (text == null || text.isEmpty()) {
             return new ArrayList<>();
         }
         return itemRepository.search(ownerId, text).stream().map(itemMapper::toItemDto).collect(Collectors.toSet());

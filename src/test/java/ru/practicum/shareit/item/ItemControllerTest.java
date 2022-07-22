@@ -17,18 +17,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext
 class ItemControllerTest extends AbstractControllerTest {
 
+    private static UserService userService;
+
     @Autowired
     ItemController itemController;
 
     @BeforeAll
     private static void init(@Autowired UserService userService) {
+
+        ItemControllerTest.userService = userService;
         if (userService.findAll().isEmpty()) {
+            userDto.setEmail("update@user.com");
+            userDto.setName("update");
             userService.create(userDto);
         }
     }
 
     @Test
     void shouldCreateItemCorrectly() throws Exception {
+
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/items")
                                 .content(objectToJson(itemDto))
@@ -47,6 +54,7 @@ class ItemControllerTest extends AbstractControllerTest {
 
     @Test
     void shouldUpdateItemCorrectly() throws Exception {
+
         itemController.create(1l, itemDto);
         ItemDto updateItem = ItemDto.builder().name("Аккумуляторная дрель").build();
         mockMvc.perform(
@@ -64,6 +72,7 @@ class ItemControllerTest extends AbstractControllerTest {
 
     @Test
     void shouldReturnAllItemCorrectly() throws Exception {
+
         itemController.create(1l, itemDto);
         itemDto.setName("for test1");
         itemController.create(1l, itemDto);
@@ -93,6 +102,7 @@ class ItemControllerTest extends AbstractControllerTest {
 
     @Test
     void shouldReturnItemById() throws Exception {
+
         itemController.create(1l, itemDto);
         mockMvc.perform(MockMvcRequestBuilders.get("/items/{itemId}", 1l))
                 .andExpect(status().isOk())
@@ -106,6 +116,7 @@ class ItemControllerTest extends AbstractControllerTest {
 
     @Test
     void shouldSearchItem() throws Exception {
+
         itemController.create(1l, itemDto);
         mockMvc.perform(MockMvcRequestBuilders.get("/items/search", 1l)
                         .param("text", "дРелЬ")
@@ -139,6 +150,7 @@ class ItemControllerTest extends AbstractControllerTest {
 
     @Test
     void shouldDeleteItemByIdCorrectly() throws Exception {
+
         mockMvc.perform(
                         MockMvcRequestBuilders.delete("/items/{itemId}", 1l)
                                 .contentType(MediaType.APPLICATION_JSON))
