@@ -14,6 +14,11 @@ import java.util.Optional;
 @RequestMapping(path = "/users")
 public class UserController {
 
+    @GetMapping("hello")
+    public String hello() {
+        return "Hello!";
+    }
+
     private final UserService userService;
 
     @Autowired
@@ -22,7 +27,7 @@ public class UserController {
     }
 
     @PostMapping
-    public Optional<UserDto> create(@Valid @RequestBody UserDto userDto) {
+    public UserDto create(@Valid @RequestBody UserDto userDto) {
         return userService.create(userDto);
     }
 
@@ -32,12 +37,12 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}")
-    public Optional<UserDto> update(@PathVariable Long userId, @RequestBody UserDto userDto) {
+    public UserDto update(@PathVariable Long userId, @RequestBody UserDto userDto) {
         return userService.updateById(userId, userDto);
     }
 
     @GetMapping
-    public Collection<User> findAll() {
+    public Collection<UserDto> findAll() {
         return userService.findAll();
     }
 

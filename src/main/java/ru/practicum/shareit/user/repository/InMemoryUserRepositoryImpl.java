@@ -23,13 +23,13 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> create(User user) {
+    public User create(User user) {
         if (USER_MAP.containsKey(user.getId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
         user.setId(currentId++);
         USER_MAP.put(user.getId(), user);
-        return Optional.of(user);
+        return Optional.of(user).orElseThrow();
     }
 
     @Override

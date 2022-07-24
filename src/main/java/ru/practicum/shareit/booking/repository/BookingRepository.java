@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface BookingRepository {
 
-    Optional<Booking> create(Booking booking);
+    Booking create(Booking booking);
 
     void deleteById(Long id);
 

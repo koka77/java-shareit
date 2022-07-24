@@ -16,14 +16,14 @@ public class InMemoryBookingRepositoryImpl implements BookingRepository {
     private final static Map<Long, Booking> BOOKING_MAP = new HashMap<>();
 
     @Override
-    public Optional<Booking> create(Booking booking) {
+    public Booking create(Booking booking) {
         if (BOOKING_MAP.containsValue(booking)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
 
         booking.setId(currentId++);
         BOOKING_MAP.put(booking.getId(), booking);
-        return Optional.of(booking);
+        return Optional.of(booking).orElseThrow();
     }
 
     @Override

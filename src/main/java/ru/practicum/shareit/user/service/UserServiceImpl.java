@@ -11,6 +11,7 @@ import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -24,12 +25,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserDto> create(UserDto userDto) {
+    public UserDto create(UserDto userDto) {
         if (userRepository.findAll().stream().anyMatch(s -> s.getEmail().equals(userDto.getEmail()))) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
         User user = userMapper.toUser(userDto);
-        return Optional.of(userMapper.toUserDto(userRepository.create(user).get()));
+        return userMapper.toUserDto(userRepository.create(user));
     }
 
     @Override
@@ -38,7 +39,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserDto> updateById(Long userId, UserDto userDto) {
+    public UserDto updateById(Long userId, UserDto userDto) {
 
         if (userRepository.findAll().stream().anyMatch(s -> s.getEmail().equals(userDto.getEmail()))) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
@@ -47,12 +48,12 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId).orElseThrow();
 
         userMapper.updateUserFromDto(userDto, user);
-        return Optional.of(userMapper.toUserDto(userRepository.updateById(userId, user)));
+        return userMapper.toUserDto(userRepository.updateById(userId, user));
     }
 
     @Override
-    public Collection<User> findAll() {
-        return userRepository.findAll();
+    public Collection<UserDto> findAll() {
+        return userRepository.findAll().stream().map(userMapper::toUserDto).collect(Collectors.toList());
     }
 
     @Override
