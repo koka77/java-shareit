@@ -50,6 +50,6 @@ public class ItemController {
     @GetMapping("search")
     public Collection<ItemDto> search(@NotBlank @RequestHeader("X-Sharer-User-Id") long ownerId,
                                       @RequestParam(required = false) String text) {
-        return itemService.searchItem(ownerId, text);
+        return itemService.searchItemByNameAndDescription(ownerId, text);
     }
 }

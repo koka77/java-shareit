@@ -47,7 +47,7 @@ public class InMemoryItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public List<Item> search(Long ownerId, String text) {
+    public List<Item> searchItemByNameAndDescription(Long ownerId, String text) {
         String preparedQuery = text.toUpperCase(Locale.ROOT).replaceAll("\\s+", "");
         return ITEM_MAP.values().stream().filter(i -> (i.getName().replaceAll("\\s+", "") + " "
                 + i.getDescription().replaceAll("\\s+", ""))

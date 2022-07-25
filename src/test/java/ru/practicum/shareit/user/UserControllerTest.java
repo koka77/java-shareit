@@ -52,7 +52,7 @@ class UserControllerTest extends AbstractControllerTest {
 
     @Test
     void shouldReturnAllUsersCorrectly() throws Exception {
-        
+
         userController.create(userDto);
         userDto.setEmail("all@all.la");
         userController.create(userDto);
