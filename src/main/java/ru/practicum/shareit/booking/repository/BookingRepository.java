@@ -1,19 +1,16 @@
 package ru.practicum.shareit.booking.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
 
-import java.util.Collection;
-import java.util.Optional;
+import java.util.List;
 
-public interface BookingRepository {
+public interface BookingRepository extends JpaRepository<Booking, Long> {
+    List<Booking> findAllByBooker(User booker);
 
-    Booking create(Booking booking);
+    List<Booking> findAllByItemOwner(User owner);
 
-    void deleteById(Long id);
-
-    void update(Booking booking);
-
-    Collection<Booking> findAll();
-
-    Optional<Booking> findById(Long id);
+    List<Booking> findAllByItem(Item item);
 }

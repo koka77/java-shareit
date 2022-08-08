@@ -9,7 +9,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
-public class InMemoryItemRepositoryImpl implements ItemRepository {
+public class InMemoryItemRepositoryImpl implements InMemoryItemRepository {
     private static Long currentId = 1L;
     private final static Map<Long, Item> ITEM_MAP = new HashMap<>();
 

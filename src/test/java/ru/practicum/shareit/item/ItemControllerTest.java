@@ -22,7 +22,7 @@ class ItemControllerTest extends AbstractControllerTest {
     @Autowired
     ItemController itemController;
 
-    @BeforeAll
+  /*  @BeforeAll
     private static void init(@Autowired UserService userService) {
 
         ItemControllerTest.userService = userService;
@@ -156,5 +156,5 @@ class ItemControllerTest extends AbstractControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print());
-    }
+    }*/
 }

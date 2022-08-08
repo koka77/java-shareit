@@ -9,6 +9,7 @@ import ru.practicum.shareit.user.model.User;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 @Builder
@@ -23,6 +24,8 @@ public class ItemDto {
 
     @NotNull
     private Boolean available;
-    private User owner;
+
     private ItemRequest request;
+
+    List<CommentDto> comments;
 }
