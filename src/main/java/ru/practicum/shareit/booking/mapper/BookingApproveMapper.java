@@ -1,24 +1,25 @@
 package ru.practicum.shareit.booking.mapper;
 
 import org.mapstruct.*;
+import ru.practicum.shareit.booking.dto.BookingApproveDto;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.mapper.ItemMapper;
-import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
-import ru.practicum.shareit.user.model.User;
 
 @Mapper(componentModel = "spring", uses = {UserMapper.class, ItemMapper.class},
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-public interface BookingMapper {
+public interface BookingApproveMapper {
 
     @Mapping(source="item.id",target="itemId")
     @Mapping(source="item.status",target="status")
+    @Mapping(target= "booker", source="booker", defaultExpression = "java(userMapper.toUserDto(item.getBooker()))")
     @Mapping(source="id",target="id")
-    BookingDto toBookingDto(Booking item);
+    @Mapping(source="item",target="item", defaultExpression = "java(itemMapper.toItemDto(item.getItem()))")
+    BookingApproveDto toBookingDto(Booking item);
 
-    Booking toBooking(BookingDto dto);
+    Booking toBooking(BookingApproveDto dto);
 
-    void updateBookingFromDto(BookingDto dto, @MappingTarget Booking booking);
+    void updateBookingFromDto(BookingApproveDto dto, @MappingTarget Booking booking);
 }

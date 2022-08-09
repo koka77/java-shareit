@@ -24,15 +24,15 @@ public class Booking {
     private Long id;
 
     @Column(name = "DATE_START")
-    private LocalDateTime star;
+    private LocalDateTime start;
 
-    @Future
+
     @Column(name = "DATE_END")
     private LocalDateTime end;
 
     @ManyToOne
     @JoinColumn(name = "ID_ITEM", referencedColumnName = "id")
-    @NotBlank
+
     @NonNull
     private Item item;
 
@@ -41,8 +41,10 @@ public class Booking {
     private User booker;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "STATUS")
     private BookingStatus status;
 
     @Enumerated(EnumType.STRING)
-    private BookingState state;
+    @Column(name = "STATE")
+    private BookingState state = BookingState.ALL;
 }

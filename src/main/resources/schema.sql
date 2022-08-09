@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS BOOKINGS (
                                         ID_ITEM BIGINT NOT NULL,
                                         ID_BOOKER BIGINT NOT NULL,
                                         STATE VARCHAR(10),
+                                        STATUS VARCHAR(10),
                                         CONSTRAINT FK_BOOKER FOREIGN KEY (ID_BOOKER) REFERENCES USERS (ID) ON DELETE CASCADE,
                                         CONSTRAINT FK_ITEM FOREIGN KEY (ID_ITEM) REFERENCES ITEMS (ID) ON DELETE CASCADE
 );
