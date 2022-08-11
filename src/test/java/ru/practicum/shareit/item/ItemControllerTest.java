@@ -46,7 +46,9 @@ class ItemControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content()
-                        .json("{\"id\":6,\"name\":\" for test2\",\"description\":\"Простая дрель\",\"available\":true,\"request\":null,\"nextBooking\":null,\"lastBooking\":null,\"comments\":null}"));
+                        .json("{\"id\":6,\"name\":\" for test2\",\"description\":\"Простая дрель\"," +
+                                "\"available\":true,\"request\":null,\"nextBooking\":null,\"lastBooking\":null," +
+                                "\"comments\":null}"));
     }
 
 
@@ -65,7 +67,9 @@ class ItemControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content()
-                        .json("{\"id\":1,\"name\":\"Аккумуляторная дрель\",\"description\":\"Простая дрель\",\"available\":true,\"request\":null,\"nextBooking\":null,\"lastBooking\":null,\"comments\":null}"));
+                        .json("{\"id\":1,\"name\":\"Аккумуляторная дрель\"," +
+                                "\"description\":\"Простая дрель\",\"available\":true,\"request\":null," +
+                                "\"nextBooking\":null,\"lastBooking\":null,\"comments\":null}"));
     }
 
     @Test
@@ -132,7 +136,15 @@ class ItemControllerTest extends AbstractControllerTest {
                                 "\"request\":null,\"nextBooking\":null,\"lastBooking\":null,\"comments\":[]}," +
                                 "{\"id\":3,\"name\":\"Дрель\",\"description\":\"Простая дрель\",\"available\":true," +
                                 "\"request\":null,\"nextBooking\":null,\"lastBooking\":null,\"comments\":[]}," +
-                                "{\"id\":4,\"name\":\"for test1\",\"description\":\"Простая дрель\",\"available\":true,\"request\":null,\"nextBooking\":null,\"lastBooking\":null,\"comments\":[]},{\"id\":5,\"name\":\" for test2\",\"description\":\"Простая дрель\",\"available\":true,\"request\":null,\"nextBooking\":null,\"lastBooking\":null,\"comments\":[]},{\"id\":6,\"name\":\" for test2\",\"description\":\"Простая дрель\",\"available\":true,\"request\":null,\"nextBooking\":null,\"lastBooking\":null,\"comments\":[]},{\"id\":7,\"name\":\" for test2\",\"description\":\"Простая дрель\",\"available\":true,\"request\":null,\"nextBooking\":null,\"lastBooking\":null,\"comments\":[]}]"));
+                                "{\"id\":4,\"name\":\"for test1\",\"description\":\"Простая дрель\",\"available\":true," +
+                                "\"request\":null,\"nextBooking\":null,\"lastBooking\":null,\"comments\":[]}," +
+                                "{\"id\":5,\"name\":\" for test2\",\"description\":\"Простая дрель\"," +
+                                "\"available\":true,\"request\":null,\"nextBooking\":null,\"lastBooking\":null," +
+                                "\"comments\":[]},{\"id\":6,\"name\":\" for test2\",\"description\":\"Простая дрель\"," +
+                                "\"available\":true,\"request\":null,\"nextBooking\":null,\"lastBooking\":null," +
+                                "\"comments\":[]},{\"id\":7,\"name\":\" for test2\",\"description\":\"Простая дрель\"," +
+                                "\"available\":true,\"request\":null,\"nextBooking\":null,\"lastBooking\":null," +
+                                "\"comments\":[]}]"));
     }
 
 
