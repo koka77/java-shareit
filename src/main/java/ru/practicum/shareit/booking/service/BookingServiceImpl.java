@@ -7,7 +7,6 @@ import ru.practicum.shareit.booking.exceptions.*;
 import ru.practicum.shareit.booking.mapper.BookingApproveMapper;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.model.BookingState;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.item.exceptions.ItemNotFoundException;
@@ -73,57 +72,88 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> getBookingByCurrentOwner(long userId, BookingState state) {
-        User owner = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        return bookingRepository.findAllByBookerInFuture(owner)
-                .stream()
-                .map(bookingMapper::toBookingDto)
-                .filter(bookingDtoState -> bookingDtoState.getState().equals(state))
-                .sorted(Comparator.comparing(BookingDto::getState).reversed())
-                .collect(Collectors.toList());
+    public List<BookingApproveDto> getBookingByCurrentOwner(long userId, String state) {
+
+        try {
+            BookingStatus status = BookingStatus.valueOf(state);
+            User owner = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+            List<Booking> bookingApproveDtos;
+
+            switch (status) {
+                case FUTURE:
+                    bookingApproveDtos = bookingRepository.findAllByBookerInFuture(owner);
+                    break;
+                case WAITING:
+                case REJECTED:
+                case APPROVED:
+                    bookingApproveDtos = bookingRepository.findAllByItemOwnerAndStatus(owner, status);
+                    break;
+                case CURRENT:
+                    bookingApproveDtos = bookingRepository
+                            .findAllByItemOwnerAndStartBeforeAndEndAfter(
+                                    owner, LocalDateTime.now(), LocalDateTime.now());
+                    break;
+                case PAST:
+                    bookingApproveDtos = bookingRepository
+                            .findAllByItemOwnerAndEndBefore(
+                                    owner, LocalDateTime.now());
+                    break;
+                default:
+                    bookingApproveDtos = bookingRepository.findAllByItemOwner(owner);
+            }
+
+            return bookingApproveDtos
+                    .stream()
+                    .map(bookingApproveMapper::toBookingDto)
+                    .sorted(Comparator.comparing(BookingApproveDto::getStart).reversed())
+                    .collect(Collectors.toList());
+        } catch (RuntimeException e) {
+            throw new UnsupportedStatusException();
+        }
     }
 
     @Override
     public List<BookingApproveDto> getBookingByCurrentUser(long userId, String state) {
 
-            User booker = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        User booker = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         try {
-            BookingState bookingState = BookingState.valueOf(state);
+            BookingStatus bookingStatus = BookingStatus.valueOf(state);
 
 
             List<Booking> list = new ArrayList<>();
-            switch (bookingState) {
+            switch (bookingStatus) {
                 case ALL:
                     list = bookingRepository.findAllByBooker(booker);
                     break;
                 case FUTURE:
-                    list = bookingRepository.findAllByBookerInFuture(booker, LocalDateTime.now());
+                    list = bookingRepository.findAllByBookerInFuture(booker);
                     break;
                 case CURRENT:
-                    list = bookingRepository.findAllByBookerInCurrent(booker, LocalDateTime.now());
+                    list = bookingRepository.findAllByBookerInCurrent(booker);
                     break;
                 case PAST:
                     list = bookingRepository.findAllByBookerInPast(booker, LocalDateTime.now());
                     break;
                 case REJECTED:
-                    list = bookingRepository.findAllByBookerInCurrent(booker, LocalDateTime.now());
+                    list = bookingRepository.findAllByBookerAndStatus(booker, BookingStatus.REJECTED);
                     break;
                 case WAITING:
-                    list = bookingRepository.findAllByBookerInCurrent(booker, LocalDateTime.now());
+                    list = bookingRepository.findAllByBookerAndStatus(booker, BookingStatus.WAITING);
                     break;
                 default:
-                    throw new UnsupportedStatusException("Unknown state: " + state);
+                    throw new UnsupportedStatusException();
 
 
             }
 
-            return list
-                    .stream()
+            List<BookingApproveDto> bookingApproveDtos = list.stream()
                     .map(bookingApproveMapper::toBookingDto)
                     .sorted(Comparator.comparing(BookingApproveDto::toString).reversed())
                     .collect(Collectors.toList());
+
+            return bookingApproveDtos;
         } catch (RuntimeException e) {
-            throw new UnsupportedStatusException("sadsa");
+            throw new UnsupportedStatusException();
         }
     }
 

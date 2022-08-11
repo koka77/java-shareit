@@ -8,10 +8,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
-import javax.validation.constraints.Future;
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Table(name = "BOOKINGS")
 @Entity
@@ -44,7 +41,4 @@ public class Booking {
     @Column(name = "STATUS")
     private BookingStatus status;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "STATE")
-    private BookingState state = BookingState.ALL;
 }

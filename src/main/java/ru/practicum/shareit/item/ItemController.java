@@ -44,8 +44,8 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto findById(@PathVariable Long itemId) {
-        return itemService.findById(itemId);
+    public ItemDto findById(@PathVariable Long itemId, @NotBlank @RequestHeader("X-Sharer-User-Id") long ownerId) {
+        return itemService.findById(itemId, ownerId);
     }
 
     @GetMapping("search")

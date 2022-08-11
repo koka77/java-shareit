@@ -2,14 +2,11 @@ package ru.practicum.shareit.booking;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingApproveDto;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.exceptions.ErrorResponse;
 import ru.practicum.shareit.booking.exceptions.UnsupportedStatusException;
-import ru.practicum.shareit.booking.model.BookingState;
 import ru.practicum.shareit.booking.service.BookingService;
 
 import javax.validation.Valid;
@@ -51,18 +48,21 @@ public class BookingController {
     @GetMapping()
     List<BookingApproveDto> getBookingCurrentUser(@NotBlank @RequestHeader("X-Sharer-User-Id") long userId,
                                                 @RequestParam(defaultValue = "ALL") String state) {
-        return bookingService.getBookingByCurrentUser(userId, state);
+        List<BookingApproveDto> res = bookingService.getBookingByCurrentUser(userId, state);
+        return res;
     }
 
     @GetMapping("/owner")
-    List<BookingDto> getBookingCurrentOwner(@NotBlank @RequestHeader("X-Sharer-User-Id") long userId,
-                                                 @RequestParam(defaultValue = "ALL") BookingState state) {
+    List<BookingApproveDto> getBookingCurrentOwner(@NotBlank @RequestHeader("X-Sharer-User-Id") long userId,
+                                                 @RequestParam(defaultValue = "ALL") String state) {
         return bookingService.getBookingByCurrentOwner(userId, state);
     }
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
     public ErrorResponse handleIncorrectParameterException(UnsupportedStatusException e) {
-        return new ErrorResponse("Unknown state: UNSUPPORTED_STATUS");
+        return new ErrorResponse(HttpStatus.BAD_REQUEST, "Unknown state: UNSUPPORTED_STATUS");
+//        return new ErrorResponse("Unknown state: UNSUPPORTED_STATUS");
     }
 
 }

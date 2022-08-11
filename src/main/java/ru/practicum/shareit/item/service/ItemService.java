@@ -15,7 +15,7 @@ public interface ItemService {
 
     Collection<ItemDto> findAll(Long ownerId);
 
-    ItemDto findById(Long id);
+    ItemDto findById(Long id, Long ownerId);
 
     Collection<ItemDto> search(String text);
 
