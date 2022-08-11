@@ -87,7 +87,7 @@ public class ItemServiceImpl implements ItemService {
     public Collection<ItemDto> findAll(Long ownerId) {
 
         return itemRepository.findAll().stream().filter(item -> item.getOwner().getId().equals(ownerId))
-                .map(itemMapper::toItemDto).peek(itemDto -> {
+                .map(itemMapper::toItemDto).sorted(Comparator.comparing(ItemDto::getId)).peek(itemDto -> {
                     itemDto.setNextBooking(bookingRepository
                             .next(itemDto.getId(), ownerId)
                             .isEmpty() ? null : bookingMapper.toBookingDto(bookingRepository
