@@ -22,7 +22,7 @@ class ItemControllerTest extends AbstractControllerTest {
     @Autowired
     ItemController itemController;
 
-  /*  @BeforeAll
+    @BeforeAll
     private static void init(@Autowired UserService userService) {
 
         ItemControllerTest.userService = userService;
@@ -46,9 +46,7 @@ class ItemControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content()
-                        .json("{\"id\":6,\"name\":\" for test2\",\"description\":\"Простая дрель\"," +
-                                "\"available\":true,\"owner\":{\"id\":1,\"name\":\"update\"," +
-                                "\"email\":\"update@user.com\"},\"request\":null}"));
+                        .json("{\"id\":6,\"name\":\" for test2\",\"description\":\"Простая дрель\",\"available\":true,\"request\":null,\"nextBooking\":null,\"lastBooking\":null,\"comments\":null}"));
     }
 
 
@@ -67,7 +65,7 @@ class ItemControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content()
-                        .json("{\"id\":1,\"name\":\"Аккумуляторная дрель\",\"description\":\"Простая дрель\",\"available\":true,\"owner\":{\"id\":1,\"name\":\"update\",\"email\":\"update@user.com\"},\"request\":null}"));
+                        .json("{\"id\":1,\"name\":\"Аккумуляторная дрель\",\"description\":\"Простая дрель\",\"available\":true,\"request\":null,\"nextBooking\":null,\"lastBooking\":null,\"comments\":null}"));
     }
 
     @Test
@@ -86,32 +84,33 @@ class ItemControllerTest extends AbstractControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content()
                         .json("[{\"id\":3,\"name\":\"Дрель\",\"description\":\"Простая дрель\"," +
-                                "\"available\":true,\"owner\":{\"id\":1,\"name\":\"update\"," +
-                                "\"email\":\"update@user.com\"},\"request\":null},{\"id\":2,\"name\":\"Дрель\"," +
-                                "\"description\":\"Простая дрель\",\"available\":true,\"owner\":{\"id\":1," +
-                                "\"name\":\"update\",\"email\":\"update@user.com\"},\"request\":null},{\"id\":1," +
-                                "\"name\":\"Аккумуляторная дрель\",\"description\":\"Простая дрель\"," +
-                                "\"available\":true,\"owner\":{\"id\":1,\"name\":\"update\"," +
-                                "\"email\":\"update@user.com\"},\"request\":null},{\"id\":4,\"name\":\"for test1\"," +
-                                "\"description\":\"Простая дрель\",\"available\":true,\"owner\":{\"id\":1," +
-                                "\"name\":\"update\",\"email\":\"update@user.com\"},\"request\":null},{\"id\":5," +
-                                "\"name\":\" for test2\",\"description\":\"Простая дрель\",\"available\":true," +
-                                "\"owner\":{\"id\":1,\"name\":\"update\",\"email\":\"update@user.com\"}," +
-                                "\"request\":null}]"));
+                                "\"available\":true,\"request\":null,\"nextBooking\":null,\"lastBooking\":null," +
+                                "\"comments\":null},{\"id\":5,\"name\":\" for test2\"," +
+                                "\"description\":\"Простая дрель\",\"available\":true,\"request\":null," +
+                                "\"nextBooking\":null,\"lastBooking\":null,\"comments\":null},{\"id\":4," +
+                                "\"name\":\"for test1\",\"description\":\"Простая дрель\",\"available\":true," +
+                                "\"request\":null,\"nextBooking\":null,\"lastBooking\":null,\"comments\":null}," +
+                                "{\"id\":2,\"name\":\"Дрель\",\"description\":\"Простая дрель\",\"available\":true," +
+                                "\"request\":null,\"nextBooking\":null,\"lastBooking\":null,\"comments\":null}," +
+                                "{\"id\":1,\"name\":\"Аккумуляторная дрель\",\"description\":\"Простая дрель\"," +
+                                "\"available\":true,\"request\":null,\"nextBooking\":null,\"lastBooking\":null," +
+                                "\"comments\":null}]"));
     }
 
     @Test
     void shouldReturnItemById() throws Exception {
 
         itemController.create(1l, itemDto);
-        mockMvc.perform(MockMvcRequestBuilders.get("/items/{itemId}", 1l))
+        mockMvc.perform(MockMvcRequestBuilders.get("/items/{itemId}", 1l)
+                        .param("ownerId", "1")
+                        .header("X-Sharer-User-Id", 1L))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content()
                         .json("{\"id\":1,\"name\":\"Дрель\",\"description\":\"Простая дрель\"," +
-                                "\"available\":true,\"owner\":{\"id\":1,\"name\":\"update\"," +
-                                "\"email\":\"update@user.com\"},\"request\":null}"));
+                                "\"available\":true,\"request\":null,\"nextBooking\":null,\"lastBooking\":null," +
+                                "\"comments\":[]}"));
     }
 
     @Test
@@ -126,35 +125,15 @@ class ItemControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content()
-                        .json("[{\"id\":3,\"name\":\"Дрель\",\"description\":\"Простая дрель\"," +
-                                "\"available\":true,\"owner\":{\"id\":1,\"name\":\"update\"," +
-                                "\"email\":\"update@user.com\"},\"request\":null},{\"id\":7,\"name\":\" for test2\"," +
-                                "\"description\":\"Простая дрель\",\"available\":true,\"owner\":{\"id\":1," +
-                                "\"name\":\"update\",\"email\":\"update@user.com\"},\"request\":null}," +
-                                "{\"id\":2,\"name\":\"Дрель\",\"description\":\"Простая дрель\"," +
-                                "\"available\":true,\"owner\":{\"id\":1,\"name\":\"update\"," +
-                                "\"email\":\"update@user.com\"},\"request\":null}," +
-                                "{\"id\":6,\"name\":\" for test2\",\"description\":\"Простая дрель\"," +
-                                "\"available\":true,\"owner\":{\"id\":1,\"name\":\"update\"," +
-                                "\"email\":\"update@user.com\"},\"request\":null},{\"id\":1," +
-                                "\"name\":\"Аккумуляторная дрель\",\"description\":\"Простая дрель\"," +
-                                "\"available\":true,\"owner\":{\"id\":1,\"name\":\"update\"," +
-                                "\"email\":\"update@user.com\"},\"request\":null},{\"id\":4,\"name\":\"for test1\"," +
-                                "\"description\":\"Простая дрель\",\"available\":true,\"owner\":{\"id\":1," +
-                                "\"name\":\"update\",\"email\":\"update@user.com\"},\"request\":null},{\"id\":5," +
-                                "\"name\":\" for test2\",\"description\":\"Простая дрель\",\"available\":true," +
-                                "\"owner\":{\"id\":1,\"name\":\"update\",\"email\":\"update@user.com\"}," +
-                                "\"request\":null}]"));
+                        .json("[{\"id\":1,\"name\":\"Аккумуляторная дрель\"," +
+                                "\"description\":\"Простая дрель\",\"available\":true,\"request\":null," +
+                                "\"nextBooking\":null,\"lastBooking\":null,\"comments\":[]},{\"id\":2," +
+                                "\"name\":\"Дрель\",\"description\":\"Простая дрель\",\"available\":true," +
+                                "\"request\":null,\"nextBooking\":null,\"lastBooking\":null,\"comments\":[]}," +
+                                "{\"id\":3,\"name\":\"Дрель\",\"description\":\"Простая дрель\",\"available\":true," +
+                                "\"request\":null,\"nextBooking\":null,\"lastBooking\":null,\"comments\":[]}," +
+                                "{\"id\":4,\"name\":\"for test1\",\"description\":\"Простая дрель\",\"available\":true,\"request\":null,\"nextBooking\":null,\"lastBooking\":null,\"comments\":[]},{\"id\":5,\"name\":\" for test2\",\"description\":\"Простая дрель\",\"available\":true,\"request\":null,\"nextBooking\":null,\"lastBooking\":null,\"comments\":[]},{\"id\":6,\"name\":\" for test2\",\"description\":\"Простая дрель\",\"available\":true,\"request\":null,\"nextBooking\":null,\"lastBooking\":null,\"comments\":[]},{\"id\":7,\"name\":\" for test2\",\"description\":\"Простая дрель\",\"available\":true,\"request\":null,\"nextBooking\":null,\"lastBooking\":null,\"comments\":[]}]"));
     }
 
 
-    @Test
-    void shouldDeleteItemByIdCorrectly() throws Exception {
-
-        mockMvc.perform(
-                        MockMvcRequestBuilders.delete("/items/{itemId}", 1l)
-                                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andDo(print());
-    }*/
 }

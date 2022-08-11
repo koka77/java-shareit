@@ -77,13 +77,4 @@ class UserControllerTest extends AbstractControllerTest {
                         .json("{\"id\":1,\"name\":\"update\",\"email\":\"update@user.com\"}"));
     }
 
-    @Test
-    void shouldDeleteUserCorrectly() throws Exception {
-
-        mockMvc.perform(
-                        MockMvcRequestBuilders.delete("/users/{userId}", 1l)
-                                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andDo(print());
-    }
 }
