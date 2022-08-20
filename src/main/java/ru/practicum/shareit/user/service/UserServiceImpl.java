@@ -5,8 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.repository.InMemoryUserRepository;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.Collection;
@@ -26,11 +28,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto create(UserDto userDto) {
-        if (userRepository.findAll().stream().anyMatch(s -> s.getEmail().equals(userDto.getEmail()))) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT);
-        }
+
         User user = userMapper.toUser(userDto);
-        return userMapper.toUserDto(userRepository.create(user));
+        return userMapper.toUserDto(userRepository.save(user));
     }
 
     @Override
@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId).orElseThrow();
 
         userMapper.updateUserFromDto(userDto, user);
-        return userMapper.toUserDto(userRepository.updateById(userId, user));
+        return userMapper.toUserDto(userRepository.save(user));
     }
 
     @Override
@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserDto> findById(Long id) {
-        Optional<User> user = userRepository.findById(id);
+        Optional<User> user = Optional.ofNullable(userRepository.findById(id).orElseThrow(() -> new UserNotFoundException()));
         return Optional.of(userMapper.toUserDto(user.get()));
     }
 }

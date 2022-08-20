@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Repository
-public class InMemoryUserRepositoryImpl implements UserRepository {
+public class InMemoryUserRepositoryImpl implements InMemoryUserRepository {
     private static Long currentId = 1L;
     private final static Map<Long, User> USER_MAP = new HashMap<>();
 

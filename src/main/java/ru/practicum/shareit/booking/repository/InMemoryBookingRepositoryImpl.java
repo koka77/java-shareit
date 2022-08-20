@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Repository
-public class InMemoryBookingRepositoryImpl implements BookingRepository {
+public class InMemoryBookingRepositoryImpl implements InMemoryBookingRepository {
     private static Long currentId = 1L;
     private final static Map<Long, Booking> BOOKING_MAP = new HashMap<>();
 

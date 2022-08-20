@@ -1,21 +1,29 @@
 package ru.practicum.shareit.item.mapper;
 
 import org.mapstruct.*;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.requests.mapper.ItemRequestMapper;
 import ru.practicum.shareit.user.mapper.UserMapper;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring", uses = {UserMapper.class, ItemRequestMapper.class},
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-public interface ItemMapper {
+public interface CommentMapper {
 
-    ItemDto toItemDto(Item item);
+    @Mapping(source="author.name",target="authorName")
+    CommentDto toCommentDto(Comment comment);
 
-    @Mapping(target = "owner", ignore = true)
-    Item toItem(ItemDto dto);
+    Comment toComment(CommentDto dto);
 
-    void updateItemFromDto(ItemDto dto, @MappingTarget Item item);
+    List<CommentDto> toDtoList(List<Comment> list);
+
+    List<Comment> toCommentList(List<CommentDto> list);
+
+    void updateCommentFromDto(CommentDto dto, @MappingTarget Comment comment);
 
 }
