@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 import javax.validation.constraints.NotEmpty;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -17,7 +18,7 @@ public class ItemRequestDto {
 
     long id;
 
-    List<ItemDto> items;
+    List<ItemDto> items = new ArrayList<>();
 
     @NotEmpty
     private String description;

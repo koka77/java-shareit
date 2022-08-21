@@ -29,7 +29,7 @@ public class ItemRequest {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_REQUESTOR")
     private User requestor;
-
+/*
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable (
@@ -37,7 +37,7 @@ public class ItemRequest {
             joinColumns = @JoinColumn (name = "ID_REQUEST"),
             inverseJoinColumns = @JoinColumn(name = "ID_ITEM")
     )
-    private List<Item> items = new ArrayList<>();
+    private List<Item> items = new ArrayList<>();*/
 
     private LocalDateTime created;
 }
