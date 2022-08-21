@@ -11,6 +11,7 @@ import ru.practicum.shareit.user.mapper.UserMapper;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface ItemMapper {
 
+    @Mapping(source="request.id",target="requestId")
     ItemDto toItemDto(Item item);
 
     @Mapping(target = "owner", ignore = true)

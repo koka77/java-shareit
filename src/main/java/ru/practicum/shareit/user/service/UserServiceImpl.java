@@ -8,7 +8,6 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.repository.InMemoryUserRepository;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.Collection;
@@ -58,7 +57,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserDto> findById(Long id) {
-        Optional<User> user = Optional.ofNullable(userRepository.findById(id).orElseThrow(() -> new UserNotFoundException()));
-        return Optional.of(userMapper.toUserDto(user.get()));
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException());
+        UserDto userDto = userMapper.toUserDto(user);
+        return Optional.of(userDto);
     }
 }

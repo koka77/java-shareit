@@ -1,13 +1,13 @@
 package ru.practicum.shareit.requests.repository;
 
-import ru.practicum.shareit.requests.ItemRequest;
+import ru.practicum.shareit.requests.model.ItemRequest;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class InMemoryItemRequestRepositoryImpl implements ItemRequestRepository {
+public class InMemoryItemRequestRepositoryImpl implements InMemoryItemRequestRepository {
     private static Long currentId = 1L;
     private final static Map<Long, ItemRequest> ITEM_REQUEST_MAP = new HashMap<>();
 
