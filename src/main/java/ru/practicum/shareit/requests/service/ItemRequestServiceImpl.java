@@ -9,9 +9,11 @@ import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
+import ru.practicum.shareit.requests.exception.RequestNotFoundException;
 import ru.practicum.shareit.requests.mapper.ItemRequestMapper;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.requests.repository.ItemRequestRepository;
+import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
@@ -47,8 +49,22 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
 
     @Override
-    public ItemRequest findById(Long id) {
-        return itemRequestRepository.findById(id).orElseThrow();
+    public ItemRequest findById(Long requestId, Long userId) {
+        userService.findById(userId).orElseThrow();
+        return itemRequestRepository
+                .findById(requestId)
+                .orElseThrow(UserNotFoundException::new);
+    }
+
+    @Override
+    public ItemRequestDto findByIdDto(Long requestId, Long userId) {
+        userService.findById(userId).orElseThrow(UserNotFoundException::new);
+        List<ItemDto> items = itemMapper.toDtoList(itemService.findByRequestId(requestId));
+        ItemRequest request= itemRequestRepository.findById(requestId).orElseThrow(RequestNotFoundException::new);
+        ItemRequestDto requestDto = itemRequestMapper.toItemRequestDto(request);
+        requestDto.setItems(items);
+
+        return requestDto;
     }
 
     @Override

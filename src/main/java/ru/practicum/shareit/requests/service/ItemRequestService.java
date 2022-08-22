@@ -8,7 +8,9 @@ import java.util.List;
 
 public interface ItemRequestService {
 
-    ItemRequest findById(Long id);
+    ItemRequest findById(Long requestId, Long userId);
+
+    ItemRequestDto findByIdDto(Long requestId, Long userId);
 
     ItemRequestDto create(long userId, ItemRequestDto itemRequestDto);
 
