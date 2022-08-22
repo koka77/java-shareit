@@ -22,8 +22,9 @@ public interface ItemMapper {
     Item toItem(ItemDto dto);
 
     void updateItemFromDto(ItemDto dto, @MappingTarget Item item);
-/*
+
+//    List<ItemDto> toList(List<Item> list);
     @Mapping(target = "List<ItemDto>")
-    List<ItemDto> toDtoList(List<Item> list);*/
+    List<ItemDto> toDtoList(List<Item> list);
 
 }

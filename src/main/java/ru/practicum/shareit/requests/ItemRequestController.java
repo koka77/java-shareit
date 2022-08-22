@@ -8,6 +8,7 @@ import ru.practicum.shareit.requests.service.ItemRequestService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 /**
@@ -37,17 +38,17 @@ public class ItemRequestController {
 
    @GetMapping("/all")
     List<ItemRequestDto> getAll(@NotBlank @RequestHeader("X-Sharer-User-Id") long userId,
-                                @Valid @RequestParam(defaultValue = "1") int from,
+                                @Valid @RequestParam(defaultValue = "1") @Positive int from,
                                 @RequestParam(defaultValue = "10") int size) {
         if (from < 0) {
             throw new InvalidPaginationException();
         }
         return itemRequestService.getAll(userId, from, size);
     }
-/*
+
     @GetMapping("/{requestId}")
     ItemRequestDto getById(@NotBlank @RequestHeader("X-Sharer-User-Id") long userId,
                            @PathVariable long requestId) {
         return itemRequestService.getById(userId, requestId);
-    }*/
+    }
 }

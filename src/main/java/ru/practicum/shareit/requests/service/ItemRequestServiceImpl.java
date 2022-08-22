@@ -77,15 +77,14 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public List<ItemRequestDto> getAll(long userId, int from, int size) {
         User requestor = userMapper.toUser(userService.findById(userId).orElseThrow());
-        List<ItemRequestDto> result = itemRequestRepository.findAllByRequestorIsNot(requestor,
+        List<ItemRequestDto> result = itemRequestRepository.findAllByRequestorIsNotOrderByCreated(requestor,
                         PageRequest.of(from / size,
-                                size,
-                                Sort.by(Sort.Direction.DESC, "created"))
+                                size)
                 )
                 .stream()
                 .map(itemRequestMapper::toItemRequestDto).peek(itemRequestDto -> {
                     if (itemRequestDto.getItems() == null) {
-                        itemRequestDto.setItems(new ArrayList<>());
+                        itemRequestDto.setItems(itemMapper.toDtoList(itemService.findByRequestId(itemRequestDto.getId())));
                     }
                 }).collect(Collectors.toList());
 
