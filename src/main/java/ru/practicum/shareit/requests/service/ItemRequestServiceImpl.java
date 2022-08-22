@@ -77,7 +77,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public List<ItemRequestDto> getAll(long userId, int from, int size) {
         User requestor = userMapper.toUser(userService.findById(userId).orElseThrow());
-        List<ItemRequestDto> result = itemRequestRepository.findAllByRequestor(requestor,
+        List<ItemRequestDto> result = itemRequestRepository.findAllByRequestorIsNot(requestor,
                         PageRequest.of(from / size,
                                 size,
                                 Sort.by(Sort.Direction.DESC, "created"))
