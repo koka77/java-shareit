@@ -12,9 +12,9 @@ public interface BookingService {
 
     BookingApproveDto approveBooking(Long userId, Long bookingId, boolean approved);
 
-    List<BookingApproveDto> getBookingByCurrentOwner(long userId, String state);
+    List<BookingApproveDto> getBookingByCurrentOwner(long userId, String state, int from, int size);
 
-    List<BookingApproveDto> getBookingByCurrentUser(long userId, String state);
+    List<BookingApproveDto> getBookingByCurrentUser(long userId, String state, int from, int size);
 
 
 }

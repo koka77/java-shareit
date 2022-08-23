@@ -15,9 +15,6 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
-/**
- * // TODO .
- */
 @Validated
 @RestController
 @RequestMapping(path = "/requests")
