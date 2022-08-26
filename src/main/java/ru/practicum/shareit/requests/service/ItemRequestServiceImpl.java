@@ -2,7 +2,6 @@ package ru.practicum.shareit.requests.service;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
@@ -19,7 +18,6 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,7 +58,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public ItemRequestDto findByIdDto(Long requestId, Long userId) {
         userService.findById(userId).orElseThrow(UserNotFoundException::new);
         List<ItemDto> items = itemMapper.toDtoList(itemService.findByRequestId(requestId));
-        ItemRequest request= itemRequestRepository.findById(requestId).orElseThrow(RequestNotFoundException::new);
+        ItemRequest request = itemRequestRepository.findById(requestId).orElseThrow(RequestNotFoundException::new);
         ItemRequestDto requestDto = itemRequestMapper.toItemRequestDto(request);
         requestDto.setItems(items);
 

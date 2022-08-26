@@ -50,7 +50,7 @@ public class ItemController {
 
     @GetMapping("search")
     public Collection<ItemDto> search(@NotBlank @RequestHeader("X-Sharer-User-Id")
-                                          @RequestParam(required = false) String text) {
+                                      @RequestParam(required = false) String text) {
         return itemService.search(text);
     }
 

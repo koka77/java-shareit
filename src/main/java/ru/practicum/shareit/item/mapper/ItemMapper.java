@@ -3,9 +3,7 @@ package ru.practicum.shareit.item.mapper;
 import org.mapstruct.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.requests.dto.ItemRequestDto;
 import ru.practicum.shareit.requests.mapper.ItemRequestMapper;
-import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.mapper.UserMapper;
 
 import java.util.List;
@@ -15,7 +13,7 @@ import java.util.List;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface ItemMapper {
 
-    @Mapping(source="request.id",target="requestId")
+    @Mapping(source = "request.id", target = "requestId")
     ItemDto toItemDto(Item item);
 
     @Mapping(target = "owner", ignore = true)
@@ -23,7 +21,6 @@ public interface ItemMapper {
 
     void updateItemFromDto(ItemDto dto, @MappingTarget Item item);
 
-//    List<ItemDto> toList(List<Item> list);
     @Mapping(target = "List<ItemDto>")
     List<ItemDto> toDtoList(List<Item> list);
 

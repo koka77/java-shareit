@@ -4,14 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
-import ru.practicum.shareit.requests.exception.InvalidPaginationException;
 import ru.practicum.shareit.requests.mapper.ItemRequestMapper;
 import ru.practicum.shareit.requests.service.ItemRequestService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
@@ -40,10 +37,10 @@ public class ItemRequestController {
         return itemRequestService.getByRequestor(userId);
     }
 
-   @GetMapping("/all")
+    @GetMapping("/all")
     List<ItemRequestDto> getAll(@Min(1) @RequestHeader("X-Sharer-User-Id") long userId,
-                                @RequestParam(defaultValue = "1")   @PositiveOrZero int from,
-                                @RequestParam(defaultValue = "10")   int size) {
+                                @RequestParam(defaultValue = "1") @PositiveOrZero int from,
+                                @RequestParam(defaultValue = "10") int size) {
 
         return itemRequestService.getAll(userId, from, size);
     }

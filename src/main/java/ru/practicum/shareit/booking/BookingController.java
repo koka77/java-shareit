@@ -28,7 +28,7 @@ public class BookingController {
 
     @PostMapping()
     public BookingDto create(@RequestHeader("X-Sharer-User-Id") long userId,
-                             @RequestBody  @Valid BookingDto bookingDto) {
+                             @RequestBody @Valid BookingDto bookingDto) {
 
         return bookingService.create(userId, bookingDto);
     }
@@ -36,14 +36,14 @@ public class BookingController {
 
     @PatchMapping("/{bookingId}")
     BookingApproveDto approveStatus(@Min(1) @RequestHeader("X-Sharer-User-Id") long userId,
-                                        @PathVariable Long bookingId,
-                                        @RequestParam boolean approved) {
+                                    @PathVariable Long bookingId,
+                                    @RequestParam boolean approved) {
         return bookingService.approveBooking(userId, bookingId, approved);
     }
 
     @GetMapping("/{bookingId}")
     BookingApproveDto getBookingById(@Min(1) @RequestHeader("X-Sharer-User-Id") long userId,
-                                    @PathVariable long bookingId) {
+                                     @PathVariable long bookingId) {
         return bookingService.getBookingById(userId, bookingId);
     }
 
@@ -63,6 +63,7 @@ public class BookingController {
                                                    @RequestParam(defaultValue = "10") int size) {
         return bookingService.getBookingByCurrentOwner(userId, state, from, size);
     }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody

@@ -19,7 +19,6 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.requests.service.ItemRequestService;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
@@ -150,7 +149,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<Item> findByRequestor(User requestor) {
 
-       return itemRepository.findByRequestRequestor(requestor);
+        return itemRepository.findByRequestRequestor(requestor);
     }
 
     @Override

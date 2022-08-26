@@ -31,14 +31,14 @@ class UserControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content()
-                        .json("{\"id\":4,\"name\":\"2update\",\"email\":\"2update@user.com\"}"));
+                        .json("{\"id\":2,\"name\":\"2update\",\"email\":\"2update@user.com\"}"));
     }
 
     @Test
     void shouldUpdateUserCorrectly() throws Exception {
 
         userController.create(userDto);
-        UserDto updateUser = UserDto.builder().name("update").email("update@user.com").build();
+        UserDto updateUser = UserDto.builder().name("3update").email("3update@user.com").build();
         mockMvc.perform(
                         MockMvcRequestBuilders.patch("/users/{userId}", 1l)
                                 .content(objectToJson(updateUser))
@@ -47,23 +47,19 @@ class UserControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content()
-                        .json("{\"id\":1,\"name\":\"update\",\"email\":\"update@user.com\"}"));
+                        .json("{\"id\":1,\"name\":\"3update\",\"email\":\"3update@user.com\"}"));
     }
 
     @Test
     void shouldReturnAllUsersCorrectly() throws Exception {
 
-        userController.create(userDto);
-        userDto.setEmail("all@all.la");
-        userController.create(userDto);
+
         mockMvc.perform(MockMvcRequestBuilders.get("/users"))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content()
-                        .json("[{\"id\":1,\"name\":\"update\",\"email\":\"update@user.com\"}," +
-                                "{\"id\":2,\"name\":\"1update\",\"email\":\"1update@user.com\"}," +
-                                "{\"id\":3,\"name\":\"1update\",\"email\":\"all@all.la\"}]"));
+                        .json("[{\"id\":1,\"name\":\"3update\",\"email\":\"3update@user.com\"}]"));
     }
 
     @Test
@@ -74,7 +70,7 @@ class UserControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content()
-                        .json("{\"id\":1,\"name\":\"update\",\"email\":\"update@user.com\"}"));
+                        .json("{\"id\":1,\"name\":\"3update\",\"email\":\"3update@user.com\"}"));
     }
 
 }

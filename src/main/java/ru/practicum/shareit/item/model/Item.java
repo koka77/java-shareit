@@ -27,12 +27,12 @@ public class Item {
     @Column(name = "is_available")
     private Boolean available;
 
-      @ManyToOne( )
-    @JoinColumn(name = "ID_OWNER", referencedColumnName = "id")
+    @ManyToOne
+    @JoinColumn(name = "ID_OWNER", referencedColumnName = "ID")
     private User owner;
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID_REQUEST", referencedColumnName = "id")
+    @JoinColumn(name = "ID_REQUEST", referencedColumnName = "ID")
     private ItemRequest request;
 }
