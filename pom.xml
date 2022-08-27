@@ -202,8 +202,9 @@
                             </goals>
                             <configuration>
                                 <excludes>
-                                    <exclude>ru/practicum/shareit/**/*MapperImpl.class</exclude>
+                                    <exclude>*MapperImpl.class</exclude>
                                     <exclude>/target/*</exclude>
+                                    <exclude>*InMemory*</exclude>
                                 </excludes>
                                 <rules>
                                     <rule>

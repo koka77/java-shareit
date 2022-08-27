@@ -1,7 +1,6 @@
 package ru.practicum.shareit.requests;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.AbstractControllerTest;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
-import ru.practicum.shareit.requests.exception.RequestNotFoundException;
 import ru.practicum.shareit.requests.service.ItemRequestServiceImpl;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.service.UserService;
