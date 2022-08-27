@@ -70,11 +70,6 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public void deleteById(Long id) {
-        itemRepository.deleteById(id);
-    }
-
-    @Override
     public ItemDto updateById(Long userId, Long id, ItemDto itemDto) {
 
         User user = userRepository.findById(userId).orElseThrow(() -> new UserHasNotPermission());

@@ -20,6 +20,7 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -94,6 +95,20 @@ class ItemControllerTest extends AbstractControllerTest {
         prepair();
         Collection<ItemDto> items = itemService.search("дРелЬ");
         mockMvc.perform(MockMvcRequestBuilders.get("/items/search", 1l).param("text", "дРелЬ").header("X-Sharer-User-Id", 1L)).andExpect(status().isOk()).andDo(print()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)).andExpect(content().json(mapper.writeValueAsString(items)));
+    }
+
+    @Test
+    @DirtiesContext
+    void searchItemShouldReturnEmptyList() throws Exception {
+
+        prepair();
+        mockMvc.perform(MockMvcRequestBuilders.get("/items/search", 1l)
+                .param("text", "")
+                .header("X-Sharer-User-Id", 1L))
+                .andExpect(status().isOk()).andDo(print())
+                .andExpect(content()
+                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(mapper.writeValueAsString(new ArrayList<>())));
     }
 
 

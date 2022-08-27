@@ -22,6 +22,7 @@ import ru.practicum.shareit.requests.mapper.ItemRequestMapper;
 import ru.practicum.shareit.requests.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
+import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.service.UserService;
 
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -34,6 +35,9 @@ public class AbstractControllerTest {
 
     @Autowired
     protected UserService userService;
+
+    @Autowired
+    protected UserRepository userRepository;
 
     @Autowired
     protected ItemService itemService;

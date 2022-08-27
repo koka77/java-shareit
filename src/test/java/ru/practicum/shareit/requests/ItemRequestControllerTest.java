@@ -12,6 +12,7 @@ import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.requests.service.ItemRequestServiceImpl;
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -38,7 +39,7 @@ class ItemRequestControllerTest extends AbstractControllerTest {
     @DirtiesContext
     void create() throws Exception {
 
-         prepairRequest();
+        prepairRequest();
         LocalDateTime start = LocalDateTime.now().plusMinutes(1l);
         ItemRequest request = new ItemRequest();
         request.setRequestor(userMapper.toUser(userDto));
@@ -58,8 +59,8 @@ class ItemRequestControllerTest extends AbstractControllerTest {
 
     @Test
     @DirtiesContext
-    void getByRequestor()  throws Exception {
-         prepairRequest();
+    void getByRequestor() throws Exception {
+        prepairRequest();
         LocalDateTime start = LocalDateTime.now().plusMinutes(1l);
         ItemRequest request = new ItemRequest();
         request.setRequestor(userMapper.toUser(userDto));
@@ -78,20 +79,20 @@ class ItemRequestControllerTest extends AbstractControllerTest {
                                 .header("X-Sharer-User-Id", 1L)
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-        .andExpect(content().json(mapper.writeValueAsString(List.of(expected))));
+                .andExpect(content().json(mapper.writeValueAsString(List.of(expected))));
 
     }
 
     @Test
     @DirtiesContext
-    void getAllShouldReturnUserNotFoundException()  throws Exception {
+    void getAllShouldReturnUserNotFoundException() throws Exception {
         assertThrows(UserNotFoundException.class, () -> itemRequestService.getAll(100L, 1, 1));
     }
 
     @Test
     @DirtiesContext
     void getAllShouldReturnNothing() throws Exception {
-         prepairRequest();
+        prepairRequest();
         LocalDateTime start = LocalDateTime.now().plusMinutes(1l);
         ItemRequest request = new ItemRequest();
         request.setRequestor(userMapper.toUser(userDto));
@@ -112,8 +113,8 @@ class ItemRequestControllerTest extends AbstractControllerTest {
 
     @Test
     @DirtiesContext
-    void getById()   throws Exception {
-         prepairRequest();
+    void getById() throws Exception {
+        prepairRequest();
 
         LocalDateTime start = LocalDateTime.now().plusMinutes(1l);
         ItemRequest request = new ItemRequest();
@@ -121,7 +122,7 @@ class ItemRequestControllerTest extends AbstractControllerTest {
         request.setDescription("one");
         request.getRequestor().setId(1l);
         request.setCreated(start);
-         itemRequestMapper.toItemRequestDto(itemRequestRepository.save(request));
+        itemRequestMapper.toItemRequestDto(itemRequestRepository.save(request));
 
         ItemRequestDto expected = itemRequestService.findByIdDto(1l, 1l);
 
@@ -143,12 +144,10 @@ class ItemRequestControllerTest extends AbstractControllerTest {
 
     private void prepairRequest() {
 
-        userService.create(userDto);
-        userService.create(userDto2);
-        userService.create(userDto3);
+         userDto = userService.create(userDto);
+         userDto2 = userService.create(userDto2);
+         userDto3 = userService.create(userDto3);
 
-        itemService.create(1l, itemDto2);
-        itemService.create(2l, itemDto);
 
         bookingDto.setItemId(1l);
         bookingDto2.setItemId(2l);

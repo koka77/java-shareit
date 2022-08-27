@@ -12,8 +12,6 @@ public interface ItemService {
 
     ItemDto create(long userId, ItemDto itemDto);
 
-    void deleteById(Long id);
-
     ItemDto updateById(Long userId, Long id, ItemDto itemDto);
 
     Collection<ItemDto> findAll(Long ownerId);
