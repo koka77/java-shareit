@@ -140,7 +140,7 @@ public class BookingServiceImpl implements BookingService {
             BookingStatus bookingStatus = BookingStatus.valueOf(state);
 
 
-            List<Booking> list;
+            List<Booking> list = new ArrayList<>();
             switch (bookingStatus) {
                 case ALL:
                     list = bookingRepository.findAllByBooker(booker, pageRequest);
@@ -172,8 +172,7 @@ public class BookingServiceImpl implements BookingService {
                             pageRequest
                     );
                     break;
-                default:
-                    throw new UnsupportedStatusException();
+
 
 
             }

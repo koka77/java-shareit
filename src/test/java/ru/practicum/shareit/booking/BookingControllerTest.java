@@ -1,7 +1,6 @@
 package ru.practicum.shareit.booking;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -10,10 +9,6 @@ import ru.practicum.shareit.AbstractControllerTest;
 import ru.practicum.shareit.booking.dto.BookingApproveDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
-import ru.practicum.shareit.booking.repository.BookingRepository;
-import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.item.service.ItemService;
-import ru.practicum.shareit.user.service.UserService;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -26,20 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext
 @Transactional
 class BookingControllerTest extends AbstractControllerTest {
-    @Autowired
-    BookingController bookingController;
 
-    @Autowired
-    UserService userService;
-
-    @Autowired
-    ItemService itemService;
-
-    @Autowired
-    BookingService bookingService;
-
-    @Autowired
-    BookingRepository bookingRepository;
 
     @Test
     @DirtiesContext
@@ -90,6 +72,7 @@ class BookingControllerTest extends AbstractControllerTest {
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
+
     @Test
     @DirtiesContext
     void createShouldReturnUserHasNotPermissionException() throws Exception {
@@ -457,7 +440,8 @@ class BookingControllerTest extends AbstractControllerTest {
         createBooking();
 
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/bookings/owner?approved=true&state=ERROR")
+                        MockMvcRequestBuilders
+                                .get("/bookings/owner?approved=true&state=ERROR")
                                 .characterEncoding(StandardCharsets.UTF_8)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .header("X-Sharer-User-Id", 1L)

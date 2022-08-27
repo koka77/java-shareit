@@ -8,17 +8,21 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.practicum.shareit.AbstractControllerTest;
 import ru.practicum.shareit.user.dto.UserDto;
 
+import javax.transaction.Transactional;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DirtiesContext
+@Transactional
 class UserControllerTest extends AbstractControllerTest {
     @Autowired
     UserController userController;
 
 
     @Test
+    @DirtiesContext
     void shouldCreateUserCorrectly() throws Exception {
 
         userDto.setName("2update");
@@ -31,10 +35,11 @@ class UserControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content()
-                        .json("{\"id\":2,\"name\":\"2update\",\"email\":\"2update@user.com\"}"));
+                        .json("{\"id\":1,\"name\":\"2update\",\"email\":\"2update@user.com\"}"));
     }
 
     @Test
+    @DirtiesContext
     void shouldUpdateUserCorrectly() throws Exception {
 
         userController.create(userDto);
@@ -51,17 +56,19 @@ class UserControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    @DirtiesContext
     void shouldReturnAllUsersCorrectly() throws Exception {
-
+        userController.create(userDto);
         mockMvc.perform(MockMvcRequestBuilders.get("/users"))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content()
-                        .json("[{\"id\":1,\"name\":\"3update\",\"email\":\"3update@user.com\"}]"));
+                        .json("[{\"id\":1,\"name\":\"1update\",\"email\":\"1update@user.com\"}]"));
     }
 
     @Test
+    @DirtiesContext
     void shouldFindByIdCorrectly() throws Exception {
 
         userController.create(userDto3);

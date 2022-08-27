@@ -10,10 +10,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.practicum.shareit.booking.BookingController;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.mapper.ItemMapper;
+import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.requests.mapper.ItemRequestMapper;
+import ru.practicum.shareit.requests.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.service.UserService;
 
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -21,6 +29,35 @@ import ru.practicum.shareit.user.service.UserService;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class AbstractControllerTest {
+    @Autowired
+    protected BookingController bookingController;
+
+    @Autowired
+    protected UserService userService;
+
+    @Autowired
+    protected ItemService itemService;
+
+    @Autowired
+    protected BookingService bookingService;
+
+    @Autowired
+    protected BookingRepository bookingRepository;
+
+    @Autowired
+    protected ItemRequestMapper itemRequestMapper;
+
+    @Autowired
+    protected UserMapper userMapper;
+
+    @Autowired
+    protected ItemMapper itemMapper;
+
+    @Autowired
+    protected ItemRequestRepository itemRequestRepository;
+
+    @Autowired
+    protected ItemRepository itemRepository;
 
     @Autowired
     protected MockMvc mockMvc;

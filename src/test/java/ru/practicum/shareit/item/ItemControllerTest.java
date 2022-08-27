@@ -6,146 +6,147 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.AbstractControllerTest;
+import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.BookingStatus;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.requests.model.ItemRequest;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
+
+import java.time.LocalDateTime;
+import java.util.Collection;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DirtiesContext
+@Transactional
 class ItemControllerTest extends AbstractControllerTest {
-
-    private static UserService userService;
 
     @Autowired
     ItemController itemController;
 
-    @BeforeAll
-    private static void init(@Autowired UserService userService) {
-
-        ItemControllerTest.userService = userService;
-        if (userService.findAll().isEmpty()) {
-            userDto.setEmail("update@user.com");
-            userDto.setName("update");
-            userService.create(userDto);
-        }
-    }
-
     @Test
+    @DirtiesContext
     void shouldCreateItemCorrectly() throws Exception {
+        prepair();
 
-        mockMvc.perform(
-                        MockMvcRequestBuilders.post("/items")
-                                .content(objectToJson(itemDto))
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .header("X-Sharer-User-Id", 1L)
-                )
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content()
-                        .json("{\"id\":6,\"name\":\" for test2\",\"description\":\"Простая дрель\"," +
-                                "\"available\":true,\"request\":null,\"nextBooking\":null,\"lastBooking\":null," +
-                                "\"comments\":null}"));
+        ItemRequest request = itemRequestRepository.findById(1l).get();
+        mockMvc.perform(MockMvcRequestBuilders.post("/items").content(objectToJson(itemDto)).contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1L)).andExpect(status().isOk()).andDo(print()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)).andExpect(content().json("{\"id\":3,\"name\":\"Дрель\",\"description\":\"Простая дрель\",\"available\":true,\"requestId\":1,\"request\":" + mapper.writeValueAsString(request) + ",\"nextBooking\":null,\"lastBooking\":null,\"comments\":null}"));
+    }
+
+    @Test
+    @DirtiesContext
+    void shouldCreateItemCorrectlyWithRequestId() throws Exception {
+        prepair();
+        itemDto.setRequestId(1l);
+        mockMvc.perform(MockMvcRequestBuilders.post("/items")
+                .content(objectToJson(itemDto)).contentType(MediaType.APPLICATION_JSON)
+                .header("X-Sharer-User-Id", 1L)).andExpect(status().isOk())
+                .andDo(print()).andExpect(content()
+                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+
     }
 
 
     @Test
+    @DirtiesContext
     void shouldUpdateItemCorrectly() throws Exception {
 
-        itemController.create(1l, itemDto);
+        prepair();
         ItemDto updateItem = ItemDto.builder().name("Аккумуляторная дрель").build();
-        mockMvc.perform(
-                        MockMvcRequestBuilders.patch("/items/{itemId}", 1l)
-                                .content(objectToJson(updateItem))
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .header("X-Sharer-User-Id", 1L)
-                )
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content()
-                        .json("{\"id\":1,\"name\":\"Аккумуляторная дрель\"," +
-                                "\"description\":\"Простая дрель\",\"available\":true,\"request\":null," +
-                                "\"nextBooking\":null,\"lastBooking\":null,\"comments\":null}"));
+
+        ItemDto expected = itemService.findById(1l, 1l);
+        expected.setName("Аккумуляторная дрель");
+        expected.setComments(null);
+        mockMvc.perform(MockMvcRequestBuilders.patch("/items/{itemId}", 1l).content(objectToJson(updateItem)).contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1L)).andExpect(status().isOk()).andDo(print()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)).andExpect(content().json(mapper.writeValueAsString(expected)));
     }
 
     @Test
+    @DirtiesContext
     void shouldReturnAllItemCorrectly() throws Exception {
 
-        itemController.create(1l, itemDto);
-        itemDto.setName("for test1");
-        itemController.create(1l, itemDto);
-        itemDto.setName(" for test2");
-        itemController.create(1l, itemDto);
-        mockMvc.perform(MockMvcRequestBuilders.get("/items")
-                        .header("X-Sharer-User-Id", 1L)
-                )
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content()
-                        .json("[{\"id\":3,\"name\":\"Дрель\",\"description\":\"Простая дрель\"," +
-                                "\"available\":true,\"request\":null,\"nextBooking\":null,\"lastBooking\":null," +
-                                "\"comments\":null},{\"id\":5,\"name\":\" for test2\"," +
-                                "\"description\":\"Простая дрель\",\"available\":true,\"request\":null," +
-                                "\"nextBooking\":null,\"lastBooking\":null,\"comments\":null},{\"id\":4," +
-                                "\"name\":\"for test1\",\"description\":\"Простая дрель\",\"available\":true," +
-                                "\"request\":null,\"nextBooking\":null,\"lastBooking\":null,\"comments\":null}," +
-                                "{\"id\":2,\"name\":\"Дрель\",\"description\":\"Простая дрель\",\"available\":true," +
-                                "\"request\":null,\"nextBooking\":null,\"lastBooking\":null,\"comments\":null}," +
-                                "{\"id\":1,\"name\":\"Аккумуляторная дрель\",\"description\":\"Простая дрель\"," +
-                                "\"available\":true,\"request\":null,\"nextBooking\":null,\"lastBooking\":null," +
-                                "\"comments\":null}]"));
+        prepair();
+
+        Collection<ItemDto> all = itemService.findAll(1l);
+        mockMvc.perform(MockMvcRequestBuilders.get("/items").header("X-Sharer-User-Id", 1L)).andExpect(status().isOk()).andDo(print()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)).andExpect(content().json(mapper.writeValueAsString(all)));
     }
 
     @Test
+    @DirtiesContext
     void shouldReturnItemById() throws Exception {
-
-        itemController.create(1l, itemDto);
-        mockMvc.perform(MockMvcRequestBuilders.get("/items/{itemId}", 1l)
-                        .param("ownerId", "1")
-                        .header("X-Sharer-User-Id", 1L))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content()
-                        .json("{\"id\":1,\"name\":\"Дрель\",\"description\":\"Простая дрель\"," +
-                                "\"available\":true,\"request\":null,\"nextBooking\":null,\"lastBooking\":null," +
-                                "\"comments\":[]}"));
+        prepair();
+        ItemDto dto = itemService.findById(1l, 1l);
+        mockMvc.perform(MockMvcRequestBuilders.get("/items/{itemId}", 1l).param("ownerId", "1").header("X-Sharer-User-Id", 1L)).andExpect(status().isOk()).andDo(print()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)).andExpect(content().json(mapper.writeValueAsString(dto)));
     }
 
     @Test
+    @DirtiesContext
     void shouldSearchItem() throws Exception {
 
-        itemController.create(1l, itemDto);
-        mockMvc.perform(MockMvcRequestBuilders.get("/items/search", 1l)
-                        .param("text", "дРелЬ")
-                        .header("X-Sharer-User-Id", 1L)
-                )
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content()
-                        .json("[{\"id\":1,\"name\":\"Аккумуляторная дрель\"," +
-                                "\"description\":\"Простая дрель\",\"available\":true,\"request\":null," +
-                                "\"nextBooking\":null,\"lastBooking\":null,\"comments\":[]},{\"id\":2," +
-                                "\"name\":\"Дрель\",\"description\":\"Простая дрель\",\"available\":true," +
-                                "\"request\":null,\"nextBooking\":null,\"lastBooking\":null,\"comments\":[]}," +
-                                "{\"id\":3,\"name\":\"Дрель\",\"description\":\"Простая дрель\",\"available\":true," +
-                                "\"request\":null,\"nextBooking\":null,\"lastBooking\":null,\"comments\":[]}," +
-                                "{\"id\":4,\"name\":\"for test1\",\"description\":\"Простая дрель\",\"available\":true," +
-                                "\"request\":null,\"nextBooking\":null,\"lastBooking\":null,\"comments\":[]}," +
-                                "{\"id\":5,\"name\":\" for test2\",\"description\":\"Простая дрель\"," +
-                                "\"available\":true,\"request\":null,\"nextBooking\":null,\"lastBooking\":null," +
-                                "\"comments\":[]},{\"id\":6,\"name\":\" for test2\",\"description\":\"Простая дрель\"," +
-                                "\"available\":true,\"request\":null,\"nextBooking\":null,\"lastBooking\":null," +
-                                "\"comments\":[]},{\"id\":7,\"name\":\" for test2\",\"description\":\"Простая дрель\"," +
-                                "\"available\":true,\"request\":null,\"nextBooking\":null,\"lastBooking\":null," +
-                                "\"comments\":[]}]"));
+        prepair();
+        Collection<ItemDto> items = itemService.search("дРелЬ");
+        mockMvc.perform(MockMvcRequestBuilders.get("/items/search", 1l).param("text", "дРелЬ").header("X-Sharer-User-Id", 1L)).andExpect(status().isOk()).andDo(print()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)).andExpect(content().json(mapper.writeValueAsString(items)));
     }
 
 
+    @Test
+    @DirtiesContext
+    void shouldCreateComment() throws Exception {
+        prepair();
+
+        CommentDto dto = new CommentDto();
+        LocalDateTime created = LocalDateTime.now();
+        dto.setCreated(created);
+        dto.setItem(itemMapper.toItem(itemDto));
+        dto.setAuthorName("lalala");
+        dto.setText("bbbbbb");
+        dto.getItem().setId(1l);
+
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/items/2/comment").contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1L).content(objectToJson(dto)))
+
+                .andExpect(status().isOk()).andDo(print()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+    }
+
+    @DirtiesContext
+    private void prepair() {
+        userDto = userService.create(userDto);
+        userDto3 = userService.create(userDto3);
+        User user = userMapper.toUser(userDto);
+        ItemRequest request = new ItemRequest();
+
+        LocalDateTime start = LocalDateTime.now();
+        LocalDateTime end = LocalDateTime.now().plusMinutes(1);
+        request.setRequestor(user);
+        request.setDescription("test");
+        request.setCreated(start);
+        itemRequestRepository.save(request);
+        itemService.create(1l, itemDto);
+
+
+        Item item = itemMapper.toItem(itemDto);
+        item.setOwner(user);
+        item.getOwner().setId(1l);
+        item = itemRepository.save(item);
+
+        Booking booking = new Booking();
+        booking.setStatus(BookingStatus.WAITING);
+        booking.setItem(item);
+        booking.setBooker(userMapper.toUser(userDto));
+        booking.setStart(start);
+        booking.setEnd(end);
+        booking.getBooker().setId(1l);
+        bookingRepository.save(booking);
+
+
+//        return itemService.createComment(userDto.getId(), item.getId(), commentDto);
+    }
 }
