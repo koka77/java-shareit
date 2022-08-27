@@ -30,6 +30,7 @@ public class AbstractControllerTest {
 
 
     protected static BookingDto bookingDto = new BookingDto();
+    protected static BookingDto bookingDto2 = new BookingDto();
 
 
     protected static UserDto userDto = UserDto.builder().email("1update@user.com").name("1update").build();
@@ -39,6 +40,11 @@ public class AbstractControllerTest {
     protected static ItemDto itemDto = ItemDto.builder()
             .name("Дрель")
             .description("Простая дрель")
+            .available(true)
+            .build();
+    protected static ItemDto itemDto2 = ItemDto.builder()
+            .name("Дрель2")
+            .description("Простая дрель2")
             .available(true)
             .build();
 

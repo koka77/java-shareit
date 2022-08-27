@@ -140,7 +140,7 @@ public class BookingServiceImpl implements BookingService {
             BookingStatus bookingStatus = BookingStatus.valueOf(state);
 
 
-            List<Booking> list = new ArrayList<>();
+            List<Booking> list;
             switch (bookingStatus) {
                 case ALL:
                     list = bookingRepository.findAllByBooker(booker, pageRequest);
