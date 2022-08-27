@@ -8,8 +8,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.AbstractControllerTest;
 import ru.practicum.shareit.booking.dto.BookingApproveDto;
-import ru.practicum.shareit.booking.exceptions.UnsupportedStatusException;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
+import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.service.UserService;
@@ -18,7 +19,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -38,20 +38,32 @@ class BookingControllerTest extends AbstractControllerTest {
     @Autowired
     BookingService bookingService;
 
+    @Autowired
+    BookingRepository bookingRepository;
+
     @Test
     @DirtiesContext
-    void testCreateShouldReturnOk() throws Exception {
-        /*userService.create(userDto);
+    void createShouldReturnItemNotAvailableExceptionException() throws Exception {
 
-        userService.create(userDto2);
-        itemService.create(1l, itemDto);
-        bookingDto.setItemId(1l);
-        LocalDateTime start = LocalDateTime.now().plusMinutes(1l);
-        LocalDateTime end = LocalDateTime.now().plusMinutes(2l);
+        createBooking();
 
-        bookingDto.setStart(start);
-        bookingDto.setEnd(end);
-        bookingDto.setStatus(BookingStatus.WAITING);*/
+        Booking booking = bookingRepository.findById(1l).get();
+        booking.getItem().setAvailable(false);
+        bookingRepository.save(booking);
+
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post("/bookings")
+                                .content(objectToJson(bookingDto))
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 2L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DirtiesContext
+    void createShouldReturnOk() throws Exception {
 
         createBooking();
 
@@ -67,7 +79,21 @@ class BookingControllerTest extends AbstractControllerTest {
 
     @Test
     @DirtiesContext
-    void testCreateShouldReturnException() throws Exception {
+    void createShouldReturnException() throws Exception {
+
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post("/bookings")
+                                .content(objectToJson(bookingDto))
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 1L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+    @Test
+    @DirtiesContext
+    void createShouldReturnUserHasNotPermissionException() throws Exception {
+        createBooking();
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/bookings")
                                 .content(objectToJson(bookingDto))
@@ -80,8 +106,10 @@ class BookingControllerTest extends AbstractControllerTest {
 
     @Test
     @DirtiesContext
-    void approveStatus() throws Exception {
+    void approveStatusIsOk() throws Exception {
+
         createBooking();
+
         mockMvc.perform(
                         MockMvcRequestBuilders.patch("/bookings/1?approved=true")
                                 .characterEncoding(StandardCharsets.UTF_8)
@@ -89,6 +117,37 @@ class BookingControllerTest extends AbstractControllerTest {
                                 .header("X-Sharer-User-Id", 1L)
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DirtiesContext
+    void approveStatusReject() throws Exception {
+
+        createBooking();
+
+        mockMvc.perform(
+                        MockMvcRequestBuilders.patch("/bookings/1?approved=false")
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 1L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+
+    @Test
+    @DirtiesContext
+    void approveStatusShouldReturnException() throws Exception {
+
+        createBooking();
+
+        mockMvc.perform(
+                        MockMvcRequestBuilders.patch("/bookings/1?approved=false")
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 3L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -104,6 +163,20 @@ class BookingControllerTest extends AbstractControllerTest {
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(dto)));
+    }
+
+    @Test
+    @DirtiesContext
+    void getBookingByIdShouldReturnUserHasNotPermissionException() throws Exception {
+        createBooking();
+        BookingApproveDto dto = bookingService.getBookingById(1l, 1l);
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/bookings/1")
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 3L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -230,15 +303,16 @@ class BookingControllerTest extends AbstractControllerTest {
 
     @Test
     @DirtiesContext
-    void getBookingCurrentUserError() throws Exception {
+    void getBookingCurrentUserShouldReturnUnsupportedStatusExceptionException() throws Exception {
         createBooking();
 
-        assertThrows(UnsupportedStatusException.class, () -> mockMvc.perform(
-                MockMvcRequestBuilders.get("/bookings?state=ERROR")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("X-Sharer-User-Id", 1L)
-                        .accept(MediaType.APPLICATION_JSON)));
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/bookings?state=ERROR")
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 1L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError());
     }
 
     @Test
@@ -349,6 +423,46 @@ class BookingControllerTest extends AbstractControllerTest {
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(dtoList)));
+    }
+
+    @Test
+    @DirtiesContext
+    void getBookingCurrentOwnerApprovedShouldReturnException() throws Exception {
+        createBooking();
+
+        Booking booking1 = bookingRepository.findById(1l).get();
+        booking1.setStatus(BookingStatus.REJECTED);
+        bookingRepository.save(booking1);
+        Booking booking2 = bookingRepository.findById(1l).get();
+        booking2.setStatus(BookingStatus.REJECTED);
+        bookingRepository.save(booking2);
+
+        List<BookingApproveDto> dtoList = bookingService
+                .getBookingByCurrentOwner(1l, "APPROVED", 1, 20);
+
+        mockMvc.perform(
+                        MockMvcRequestBuilders.patch("/bookings/owner?approved=true")
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 1L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+
+    @Test
+    @DirtiesContext
+    void getBookingCurrentOwnerShouldReturnUnsupportedStatusExceptionException()
+            throws Exception {
+        createBooking();
+
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/bookings/owner?approved=true&state=ERROR")
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 1L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError());
     }
 
     private void createBooking() {
