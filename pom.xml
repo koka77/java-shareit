@@ -202,9 +202,8 @@
                             </goals>
                             <configuration>
                                 <excludes>
-                                    <exclude>*MapperImpl.class</exclude>
-                                    <exclude>/target/*</exclude>
-                                    <exclude>*InMemory*</exclude>
+                                    <exclude>**MapperImpl.class</exclude>
+                                    <exclude>*/target/*</exclude>
                                     <exclude>*Exception.class</exclude>
                                 </excludes>
                                 <rules>

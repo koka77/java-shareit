@@ -6,13 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.AbstractControllerTest;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.requests.service.ItemRequestServiceImpl;
-import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -28,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class ItemRequestControllerTest extends AbstractControllerTest {
+
     @Autowired
     private final ItemRequestServiceImpl itemRequestService;
 
@@ -80,13 +79,36 @@ class ItemRequestControllerTest extends AbstractControllerTest {
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(List.of(expected))));
-
     }
+
 
     @Test
     @DirtiesContext
     void getAllShouldReturnUserNotFoundException() throws Exception {
         assertThrows(UserNotFoundException.class, () -> itemRequestService.getAll(100L, 1, 1));
+    }
+
+    @Test
+    @DirtiesContext
+    void getAllShouldReturnItemListCorrectly() throws Exception {
+        prepairRequest();
+
+        List<ItemRequestDto> expected = itemRequestService.getAll(1l, 1, 20);
+
+        LocalDateTime start = LocalDateTime.now().plusMinutes(1l);
+        ItemRequest request = new ItemRequest();
+        request.setRequestor(userMapper.toUser(userDto));
+        request.setDescription("one");
+        request.getRequestor().setId(1l);
+        request.setCreated(start);
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/requests/all")
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 1L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(expected)));;
     }
 
     @Test
@@ -109,6 +131,31 @@ class ItemRequestControllerTest extends AbstractControllerTest {
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(new ArrayList<>())));
+    }
+
+
+    @Test
+    @DirtiesContext
+    void getAllShouldCallitemRequestDtoSetItems() throws Exception {
+        prepairRequest();
+        LocalDateTime start = LocalDateTime.now().plusMinutes(1l);
+        ItemRequest request = new ItemRequest();
+        request.setRequestor(userMapper.toUser(userDto));
+        request.setDescription("one");
+        request.getRequestor().setId(1l);
+        request.setCreated(start);
+        itemRequestRepository.save(request);
+
+        List<ItemRequestDto> expected = itemRequestService.getAll(2l, 1, 10);
+
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/requests/all")
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 2L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(expected)));
     }
 
     @Test
@@ -144,9 +191,9 @@ class ItemRequestControllerTest extends AbstractControllerTest {
 
     private void prepairRequest() {
 
-         userDto = userService.create(userDto);
-         userDto2 = userService.create(userDto2);
-         userDto3 = userService.create(userDto3);
+        userDto = userService.create(userDto);
+        userDto2 = userService.create(userDto2);
+        userDto3 = userService.create(userDto3);
 
 
         bookingDto.setItemId(1l);

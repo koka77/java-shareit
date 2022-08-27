@@ -51,7 +51,7 @@ public class BookingServiceImpl implements BookingService {
 
 
         Item item = itemRepository.findById(dto.getItemId())
-                .orElseThrow(() -> new ItemNotFoundException("не найден предмет"));
+                .orElseThrow(() -> new ItemNotFoundException(userId));
 
         if (item.getOwner().getId().equals(userId)) {
             throw new UserHasNotPermission();
@@ -172,7 +172,6 @@ public class BookingServiceImpl implements BookingService {
                             pageRequest
                     );
                     break;
-
 
 
             }

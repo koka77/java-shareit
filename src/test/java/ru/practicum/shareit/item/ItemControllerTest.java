@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -8,16 +7,13 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.AbstractControllerTest;
-import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -49,8 +45,8 @@ class ItemControllerTest extends AbstractControllerTest {
         prepair();
         itemDto.setRequestId(1l);
         mockMvc.perform(MockMvcRequestBuilders.post("/items")
-                .content(objectToJson(itemDto)).contentType(MediaType.APPLICATION_JSON)
-                .header("X-Sharer-User-Id", 1L)).andExpect(status().isOk())
+                        .content(objectToJson(itemDto)).contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", 1L)).andExpect(status().isOk())
                 .andDo(print()).andExpect(content()
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
 
@@ -103,8 +99,8 @@ class ItemControllerTest extends AbstractControllerTest {
 
         prepair();
         mockMvc.perform(MockMvcRequestBuilders.get("/items/search", 1l)
-                .param("text", "")
-                .header("X-Sharer-User-Id", 1L))
+                        .param("text", "")
+                        .header("X-Sharer-User-Id", 1L))
                 .andExpect(status().isOk()).andDo(print())
                 .andExpect(content()
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))

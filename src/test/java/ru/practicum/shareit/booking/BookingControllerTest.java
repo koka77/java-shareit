@@ -13,6 +13,7 @@ import ru.practicum.shareit.booking.model.BookingStatus;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -131,6 +132,25 @@ class BookingControllerTest extends AbstractControllerTest {
                                 .header("X-Sharer-User-Id", 3L)
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DirtiesContext
+    void approveStatusIsBad() throws Exception {
+
+        createBooking();
+
+        Booking booking = bookingRepository.findById(1l).get();
+        booking.setStatus(BookingStatus.REJECTED);
+        bookingRepository.save(booking);
+
+        mockMvc.perform(
+                        MockMvcRequestBuilders.patch("/bookings/1?approved=true")
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 1L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

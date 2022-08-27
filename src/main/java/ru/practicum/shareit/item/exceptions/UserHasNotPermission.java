@@ -8,8 +8,4 @@ public class UserHasNotPermission extends RuntimeException {
     public UserHasNotPermission() {
         super();
     }
-
-    public UserHasNotPermission(String message) {
-        super(message);
-    }
 }

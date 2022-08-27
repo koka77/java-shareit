@@ -13,11 +13,6 @@ import java.util.Optional;
 @RequestMapping(path = "/users")
 public class UserController {
 
-    @GetMapping("hello")
-    public String hello() {
-        return "Hello!";
-    }
-
     private final UserService userService;
 
     @Autowired

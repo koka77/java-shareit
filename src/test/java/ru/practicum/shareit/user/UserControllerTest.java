@@ -20,6 +20,17 @@ class UserControllerTest extends AbstractControllerTest {
     @Autowired
     UserController userController;
 
+    @Test
+    @DirtiesContext
+    void shouldDeleteUserCorrectly() throws Exception {
+        userController.create(userDto);
+        mockMvc.perform(
+                        MockMvcRequestBuilders.delete("/users/1"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
 
     @Test
     @DirtiesContext
@@ -74,14 +85,14 @@ class UserControllerTest extends AbstractControllerTest {
         userController.create(userDto3);
         UserDto updateUser = UserDto.builder().name("3update").email("3update@user.com").build();
         mockMvc.perform(
-                        MockMvcRequestBuilders.patch("/users/{userId}", 1l)
+                        MockMvcRequestBuilders.get("/users/{userId}", 1l)
                                 .content(objectToJson(updateUser))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content()
-                        .json("{\"id\":1,\"name\":\"3update\",\"email\":\"3update@user.com\"}"));
+                        .json("{\"id\":1,\"name\":\"4update\",\"email\":\"4update@user.com\"}"));
     }
 
 }
