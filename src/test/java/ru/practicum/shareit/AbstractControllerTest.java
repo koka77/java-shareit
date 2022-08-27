@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -24,9 +25,16 @@ public class AbstractControllerTest {
     @Autowired
     protected MockMvc mockMvc;
 
+    @Autowired
+    protected ObjectMapper mapper;
+
+
+    protected static BookingDto bookingDto = new BookingDto();
 
 
     protected static UserDto userDto = UserDto.builder().email("1update@user.com").name("1update").build();
+    protected static UserDto userDto2 = UserDto.builder().email("2update@user.com").name("2update").build();
+    protected static UserDto userDto3 = UserDto.builder().email("4update@user.com").name("4update").build();
 
     protected static ItemDto itemDto = ItemDto.builder()
             .name("Дрель")

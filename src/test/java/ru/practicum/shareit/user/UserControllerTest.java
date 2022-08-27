@@ -53,7 +53,6 @@ class UserControllerTest extends AbstractControllerTest {
     @Test
     void shouldReturnAllUsersCorrectly() throws Exception {
 
-
         mockMvc.perform(MockMvcRequestBuilders.get("/users"))
                 .andExpect(status().isOk())
                 .andDo(print())
@@ -65,7 +64,12 @@ class UserControllerTest extends AbstractControllerTest {
     @Test
     void shouldFindByIdCorrectly() throws Exception {
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/users/{userId}", 1l))
+        userController.create(userDto3);
+        UserDto updateUser = UserDto.builder().name("3update").email("3update@user.com").build();
+        mockMvc.perform(
+                        MockMvcRequestBuilders.patch("/users/{userId}", 1l)
+                                .content(objectToJson(updateUser))
+                                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))

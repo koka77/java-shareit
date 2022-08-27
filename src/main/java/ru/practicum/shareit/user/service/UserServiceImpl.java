@@ -42,10 +42,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateById(Long userId, UserDto userDto) {
 
-        if (userRepository.findAll().stream().anyMatch(s -> s.getEmail().equals(userDto.getEmail()))) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT);
-        }
-
         User user = userRepository.findById(userId).orElseThrow();
 
         userMapper.updateUserFromDto(userDto, user);

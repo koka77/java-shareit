@@ -53,7 +53,7 @@ class ItemRequestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void getAllShouldReturnNothinf() {
+    void getAllShouldReturnNothing() {
         userDto.setEmail("222@321.ru");
         userService.create(userDto);
         assertEquals(itemRequestService.getAll( 8L, 1, 1), new ArrayList<>());
