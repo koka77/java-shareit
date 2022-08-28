@@ -27,7 +27,11 @@ class BookingControllerTest extends AbstractControllerTest {
     @DirtiesContext
     void createShouldReturnItemNotAvailableExceptionException() throws Exception {
 
-        createBooking();
+        try {
+            createBooking();
+        }catch (RuntimeException e){
+            e.printStackTrace();
+        }
 
         Booking booking = bookingRepository.findById(1L).get();
         booking.getItem().setAvailable(false);
@@ -47,7 +51,11 @@ class BookingControllerTest extends AbstractControllerTest {
     @DirtiesContext
     void createShouldReturnOk() throws Exception {
 
-        createBooking();
+        try {
+            createBooking();
+        }catch (RuntimeException e){
+            e.printStackTrace();
+        }
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/bookings")
@@ -76,7 +84,12 @@ class BookingControllerTest extends AbstractControllerTest {
     @Test
     @DirtiesContext
     void createShouldReturnUserHasNotPermissionException() throws Exception {
-        createBooking();
+        try {
+            createBooking();
+        }catch (RuntimeException e){
+            e.printStackTrace();
+        }
+
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/bookings")
                         .content(objectToJson(bookingDto))
@@ -91,7 +104,11 @@ class BookingControllerTest extends AbstractControllerTest {
     @DirtiesContext
     void approveStatusIsOk() throws Exception {
 
-        createBooking();
+        try {
+            createBooking();
+        }catch (RuntimeException e){
+            e.printStackTrace();
+        }
 
         mockMvc.perform(
                 MockMvcRequestBuilders.patch("/bookings/1?approved=true")
@@ -106,7 +123,11 @@ class BookingControllerTest extends AbstractControllerTest {
     @DirtiesContext
     void approveStatusReject() throws Exception {
 
-        createBooking();
+        try {
+            createBooking();
+        }catch (RuntimeException e){
+            e.printStackTrace();
+        }
 
         mockMvc.perform(
                 MockMvcRequestBuilders.patch("/bookings/1?approved=false")
@@ -122,7 +143,11 @@ class BookingControllerTest extends AbstractControllerTest {
     @DirtiesContext
     void approveStatusShouldReturnException() throws Exception {
 
-        createBooking();
+        try {
+            createBooking();
+        }catch (RuntimeException e){
+            e.printStackTrace();
+        }
 
         mockMvc.perform(
                 MockMvcRequestBuilders.patch("/bookings/1?approved=false")
@@ -137,7 +162,11 @@ class BookingControllerTest extends AbstractControllerTest {
     @DirtiesContext
     void approveStatusIsBad() throws Exception {
 
-        createBooking();
+        try {
+            createBooking();
+        }catch (RuntimeException e){
+            e.printStackTrace();
+        }
 
         Booking booking = bookingRepository.findById(1L).get();
         booking.setStatus(BookingStatus.REJECTED);
@@ -155,7 +184,12 @@ class BookingControllerTest extends AbstractControllerTest {
     @Test
     @DirtiesContext
     void getBookingById() throws Exception {
-        createBooking();
+        try {
+            createBooking();
+        }catch (RuntimeException e){
+            e.printStackTrace();
+        }
+
         BookingApproveDto dto = bookingService.getBookingById(1L, 1L);
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/bookings/1")
@@ -170,7 +204,12 @@ class BookingControllerTest extends AbstractControllerTest {
     @Test
     @DirtiesContext
     void getBookingByIdShouldReturnUserHasNotPermissionException() throws Exception {
-        createBooking();
+        try {
+            createBooking();
+        }catch (RuntimeException e){
+            e.printStackTrace();
+        }
+
         BookingApproveDto dto = bookingService.getBookingById(1L, 1L);
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/bookings/1")
@@ -197,7 +236,11 @@ class BookingControllerTest extends AbstractControllerTest {
     @Test
     @DirtiesContext
     void getBookingCurrentUser() throws Exception {
-        createBooking();
+        try {
+            createBooking();
+        }catch (RuntimeException e){
+            e.printStackTrace();
+        }
 
         List<BookingApproveDto> dtoList = bookingService
                 .getBookingByCurrentUser(1L, "ALL", 1, 20);
@@ -216,7 +259,11 @@ class BookingControllerTest extends AbstractControllerTest {
     @Test
     @DirtiesContext
     void getBookingCurrentUserFuture() throws Exception {
-        createBooking();
+        try {
+            createBooking();
+        }catch (RuntimeException e){
+            e.printStackTrace();
+        }
 
         List<BookingApproveDto> dtoList = bookingService
                 .getBookingByCurrentUser(1L, "FUTURE", 1, 20);
@@ -234,7 +281,12 @@ class BookingControllerTest extends AbstractControllerTest {
     @Test
     @DirtiesContext
     void getBookingCurrentUserCurrent() throws Exception {
-        createBooking();
+
+        try {
+            createBooking();
+        }catch (RuntimeException e){
+            e.printStackTrace();
+        }
 
         List<BookingApproveDto> dtoList = bookingService
                 .getBookingByCurrentUser(1L, "CURRENT", 1, 20);
@@ -252,7 +304,12 @@ class BookingControllerTest extends AbstractControllerTest {
     @Test
     @DirtiesContext
     void getBookingCurrentUserPast() throws Exception {
-        createBooking();
+
+        try {
+            createBooking();
+        }catch (RuntimeException e){
+            e.printStackTrace();
+        }
 
         List<BookingApproveDto> dtoList = bookingService
                 .getBookingByCurrentUser(1L, "PAST", 1, 20);
@@ -270,7 +327,12 @@ class BookingControllerTest extends AbstractControllerTest {
     @Test
     @DirtiesContext
     void getBookingCurrentUserRejected() throws Exception {
-        createBooking();
+
+        try {
+            createBooking();
+        }catch (RuntimeException e){
+            e.printStackTrace();
+        }
 
         List<BookingApproveDto> dtoList = bookingService
                 .getBookingByCurrentUser(1L, "REJECTED", 1, 20);
@@ -288,7 +350,12 @@ class BookingControllerTest extends AbstractControllerTest {
     @Test
     @DirtiesContext
     void getBookingCurrentUserWaiting() throws Exception {
-        createBooking();
+
+        try {
+            createBooking();
+        }catch (RuntimeException e){
+            e.printStackTrace();
+        }
 
         List<BookingApproveDto> dtoList = bookingService
                 .getBookingByCurrentUser(1L, "WAITING", 1, 20);
@@ -306,7 +373,11 @@ class BookingControllerTest extends AbstractControllerTest {
     @Test
     @DirtiesContext
     void getBookingCurrentUserShouldReturnUnsupportedStatusExceptionException() throws Exception {
-        createBooking();
+        try {
+            createBooking();
+        }catch (RuntimeException e){
+            e.printStackTrace();
+        }
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/bookings?state=ERROR")
@@ -320,7 +391,11 @@ class BookingControllerTest extends AbstractControllerTest {
     @Test
     @DirtiesContext
     void getBookingCurrentUserShouldReturnException() throws Exception {
-        createBooking();
+        try {
+            createBooking();
+        }catch (RuntimeException e){
+            e.printStackTrace();
+        }
 
         List<BookingApproveDto> dtoList = bookingService
                 .getBookingByCurrentUser(1L, "ALL", 1, 20);
@@ -337,7 +412,12 @@ class BookingControllerTest extends AbstractControllerTest {
     @Test
     @DirtiesContext
     void getBookingCurrentOwnerAll() throws Exception {
-        createBooking();
+
+        try {
+            createBooking();
+        }catch (RuntimeException e){
+            e.printStackTrace();
+        }
 
         List<BookingApproveDto> dtoList = bookingService
                 .getBookingByCurrentOwner(1L, "ALL", 1, 20);
@@ -356,7 +436,12 @@ class BookingControllerTest extends AbstractControllerTest {
     @Test
     @DirtiesContext
     void getBookingCurrentOwnerFuture() throws Exception {
+
+        try {
         createBooking();
+        }catch (RuntimeException e){
+            e.printStackTrace();
+        }
 
         List<BookingApproveDto> dtoList = bookingService
                 .getBookingByCurrentOwner(1L, "FUTURE", 1, 20);
@@ -375,7 +460,12 @@ class BookingControllerTest extends AbstractControllerTest {
     @Test
     @DirtiesContext
     void getBookingCurrentOwnerCurrent() throws Exception {
-        createBooking();
+
+        try {
+            createBooking();
+        }catch (RuntimeException e){
+            e.printStackTrace();
+        }
 
         List<BookingApproveDto> dtoList = bookingService
                 .getBookingByCurrentOwner(1L, "CURRENT", 1, 20);
@@ -394,7 +484,12 @@ class BookingControllerTest extends AbstractControllerTest {
     @Test
     @DirtiesContext
     void getBookingCurrentOwnerPast() throws Exception {
-        createBooking();
+
+        try {
+            createBooking();
+        }catch (RuntimeException e){
+            e.printStackTrace();
+        }
 
         List<BookingApproveDto> dtoList = bookingService
                 .getBookingByCurrentOwner(1L, "PAST", 1, 20);
@@ -412,7 +507,12 @@ class BookingControllerTest extends AbstractControllerTest {
     @Test
     @DirtiesContext
     void getBookingCurrentOwnerApproved() throws Exception {
-        createBooking();
+
+        try {
+            createBooking();
+        }catch (RuntimeException e){
+            e.printStackTrace();
+        }
 
         List<BookingApproveDto> dtoList = bookingService
                 .getBookingByCurrentOwner(1L, "APPROVED", 1, 20);
@@ -430,7 +530,12 @@ class BookingControllerTest extends AbstractControllerTest {
     @Test
     @DirtiesContext
     void getBookingCurrentOwnerApprovedShouldReturnException() throws Exception {
-        createBooking();
+
+        try {
+            createBooking();
+        }catch (RuntimeException e){
+            e.printStackTrace();
+        }
 
         Booking booking1 = bookingRepository.findById(1L).get();
         booking1.setStatus(BookingStatus.REJECTED);
@@ -456,7 +561,12 @@ class BookingControllerTest extends AbstractControllerTest {
     @DirtiesContext
     void getBookingCurrentOwnerShouldReturnUnsupportedStatusExceptionException()
             throws Exception {
-        createBooking();
+
+        try {
+            createBooking();
+        }catch (RuntimeException e){
+            e.printStackTrace();
+        }
 
         mockMvc.perform(
                 MockMvcRequestBuilders
