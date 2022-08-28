@@ -1,8 +1,8 @@
 package ru.practicum.shareit.booking;
 
+import org.hibernate.LazyInitializationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -13,6 +13,10 @@ import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.requests.model.ItemRequest;
+import ru.practicum.shareit.requests.repository.ItemRequestRepository;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -26,6 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DirtiesContext
 class BookingControllerTest extends AbstractControllerTest {
+    @Autowired
+    BookingService bookingService;
 
     @Autowired
     BookingMapper bookingMapper;
@@ -34,10 +40,12 @@ class BookingControllerTest extends AbstractControllerTest {
     UserRepository userRepository;
 
     @Autowired
-    BookingController bookingController;
+    ItemRequestRepository requestRepository;
 
     @Autowired
-    BookingService bookingService;
+    BookingController bookingController;
+
+
 
     @Autowired
     UserService userService;
@@ -150,7 +158,6 @@ class BookingControllerTest extends AbstractControllerTest {
 
     @Test
     @DirtiesContext
-    @ExceptionHandler(DataIntegrityViolationException.class)
     void approveStatusIsBad() throws Exception {
 
         createBooking();
@@ -170,6 +177,7 @@ class BookingControllerTest extends AbstractControllerTest {
 
     @Test
     @DirtiesContext
+    @ExceptionHandler(LazyInitializationException.class)
     void getBookingById() throws Exception {
         createBooking();
         BookingApproveDto dto = bookingService.getBookingById(1L, 1L);
@@ -486,35 +494,78 @@ class BookingControllerTest extends AbstractControllerTest {
 
     @DirtiesContext
     private void createBooking() {
-        userRepository.deleteAll();
-        ;
-        itemRepository.deleteAll();
-        bookingRepository.deleteAll();
-
-        userService.create(userDto);
-        userService.create(userDto2);
-        userService.create(userDto3);
-
-
-        itemService.create(1L, itemDto);
-        itemService.create(2L, itemDto2);
-
-        bookingDto.setItemId(1L);
-        bookingDto2.setItemId(2L);
-
 
         LocalDateTime start = LocalDateTime.now().plusMinutes(1L);
         LocalDateTime end = LocalDateTime.now().plusMinutes(2L);
 
-        bookingDto.setStart(start);
-        bookingDto.setEnd(end);
-        bookingDto.setStatus(BookingStatus.WAITING);
+        userRepository.deleteAll();
+        itemRepository.deleteAll();
+        bookingRepository.deleteAll();
 
-        bookingDto2.setStart(start.plusMinutes(1));
-        bookingDto2.setEnd(end.plusMinutes(1));
-        bookingDto2.setStatus(BookingStatus.WAITING);
+        User user1 = new User();
+        user1.setName("1");
+        user1.setEmail("1@1.ru");
 
-        bookingService.create(2L, bookingDto);
-        bookingService.create(1L, bookingDto2);
+        User user2 = new User();
+        user2.setName("2");
+        user2.setEmail("2@2.ru");
+
+        User user3 = new User();
+        user3.setName("3");
+        user3.setEmail("3@3.ru");
+
+        userRepository.save(user1);
+        userRepository.save(user2);
+        userRepository.save(user3);
+
+        ItemRequest request1 = new ItemRequest();
+        request1.setCreated(start);
+        request1.setRequestor(user1);
+        request1.setDescription("descReq1");
+
+        ItemRequest request2 = new ItemRequest();
+        request2.setCreated(start);
+        request2.setRequestor(user2);
+        request2.setDescription("descReq2");
+
+        requestRepository.save(request1);
+        requestRepository.save(request2);
+
+        Item item1 = new Item();
+        item1.setOwner(user1);
+        item1.setName("Item1");
+        item1.setDescription("descr1");
+        item1.setAvailable(true);
+        item1.setRequest(request1);
+
+        Item item2 = new Item();
+        item2.setOwner(user2);
+        item2.setName("Item2");
+        item2.setDescription("descr2");
+        item2.setAvailable(true);
+        item2.setRequest(request2);
+
+        itemRepository.save(item1);
+        itemRepository.save(item2);
+
+
+        Booking booking1 = new Booking();
+        booking1.setBooker(user1);
+        booking1.setItem(item1);
+        booking1.setStart(start);
+        booking1.setEnd(end);
+        booking1.setStatus(BookingStatus.WAITING);
+
+
+        Booking booking2 = new Booking();
+        booking2.setBooker(user2);
+        booking2.setItem(item2);
+        booking2.setStart(start);
+        booking2.setEnd(end);
+        booking2.setStatus(BookingStatus.WAITING);
+
+        bookingRepository.save(booking1);
+        bookingRepository.save(booking2);
+
     }
 }
