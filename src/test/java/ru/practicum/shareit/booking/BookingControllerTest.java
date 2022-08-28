@@ -29,22 +29,22 @@ class BookingControllerTest extends AbstractControllerTest {
 
         try {
             createBooking();
+
+            Booking booking = bookingRepository.findById(1L).get();
+            booking.getItem().setAvailable(false);
+            bookingRepository.save(booking);
+
+            mockMvc.perform(
+                            MockMvcRequestBuilders.post("/bookings")
+                                    .content(objectToJson(bookingDto))
+                                    .characterEncoding(StandardCharsets.UTF_8)
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .header("X-Sharer-User-Id", 2L)
+                                    .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isBadRequest());
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
-
-        Booking booking = bookingRepository.findById(1L).get();
-        booking.getItem().setAvailable(false);
-        bookingRepository.save(booking);
-
-        mockMvc.perform(
-                        MockMvcRequestBuilders.post("/bookings")
-                                .content(objectToJson(bookingDto))
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .header("X-Sharer-User-Id", 2L)
-                                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -53,18 +53,18 @@ class BookingControllerTest extends AbstractControllerTest {
 
         try {
             createBooking();
+
+            mockMvc.perform(
+                            MockMvcRequestBuilders.post("/bookings")
+                                    .content(objectToJson(bookingDto))
+                                    .characterEncoding(StandardCharsets.UTF_8)
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .header("X-Sharer-User-Id", 2L)
+                                    .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk());
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
-
-        mockMvc.perform(
-                        MockMvcRequestBuilders.post("/bookings")
-                                .content(objectToJson(bookingDto))
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .header("X-Sharer-User-Id", 2L)
-                                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
     }
 
     @Test
@@ -106,17 +106,17 @@ class BookingControllerTest extends AbstractControllerTest {
 
         try {
             createBooking();
+            mockMvc.perform(
+                            MockMvcRequestBuilders.patch("/bookings/1?approved=true")
+                                    .characterEncoding(StandardCharsets.UTF_8)
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .header("X-Sharer-User-Id", 1L)
+                                    .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk());
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
 
-        mockMvc.perform(
-                        MockMvcRequestBuilders.patch("/bookings/1?approved=true")
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .header("X-Sharer-User-Id", 1L)
-                                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
     }
 
     @Test
@@ -125,17 +125,17 @@ class BookingControllerTest extends AbstractControllerTest {
 
         try {
             createBooking();
+
+            mockMvc.perform(
+                            MockMvcRequestBuilders.patch("/bookings/1?approved=false")
+                                    .characterEncoding(StandardCharsets.UTF_8)
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .header("X-Sharer-User-Id", 1L)
+                                    .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk());
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
-
-        mockMvc.perform(
-                        MockMvcRequestBuilders.patch("/bookings/1?approved=false")
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .header("X-Sharer-User-Id", 1L)
-                                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
     }
 
 
