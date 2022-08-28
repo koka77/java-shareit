@@ -469,10 +469,13 @@ class BookingControllerTest extends AbstractControllerTest {
     }
 
     private void createBooking() {
-        userService.create(userDto);
-        userService.create(userDto2);
-        userService.create(userDto3);
+        try {
+            userService.create(userDto);
+            userService.create(userDto2);
+            userService.create(userDto3);
+        }catch (RuntimeException e){
 
+        }
 
         itemService.create(1L, itemDto);
         itemService.create(2L, itemDto2);
