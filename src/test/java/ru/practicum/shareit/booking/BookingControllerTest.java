@@ -11,6 +11,7 @@ import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.nio.charset.StandardCharsets;
@@ -26,6 +27,9 @@ class BookingControllerTest extends AbstractControllerTest {
 
     @Autowired
     BookingMapper bookingMapper;
+
+    @Autowired
+    UserRepository userRepository;
 
     @Autowired
     BookingController bookingController;
@@ -479,6 +483,10 @@ class BookingControllerTest extends AbstractControllerTest {
 
     @DirtiesContext
     private void createBooking() {
+        userRepository.deleteAll();;
+        itemRepository.deleteAll();
+        bookingRepository.deleteAll();
+
         userService.create(userDto);
         userService.create(userDto2);
         userService.create(userDto3);
