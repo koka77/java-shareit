@@ -2,9 +2,11 @@ package ru.practicum.shareit.booking;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import ru.practicum.shareit.AbstractControllerTest;
 import ru.practicum.shareit.booking.dto.BookingApproveDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
@@ -148,6 +150,7 @@ class BookingControllerTest extends AbstractControllerTest {
 
     @Test
     @DirtiesContext
+    @ExceptionHandler(DataIntegrityViolationException.class)
     void approveStatusIsBad() throws Exception {
 
         createBooking();
@@ -483,7 +486,8 @@ class BookingControllerTest extends AbstractControllerTest {
 
     @DirtiesContext
     private void createBooking() {
-        userRepository.deleteAll();;
+        userRepository.deleteAll();
+        ;
         itemRepository.deleteAll();
         bookingRepository.deleteAll();
 
