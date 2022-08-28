@@ -202,9 +202,10 @@
                             </goals>
                             <configuration>
                                 <excludes>
-                                    <exclude>**MapperImpl.class</exclude>
-                                    <exclude>*/target/*</exclude>
+                                    <exclude>*MapperImpl.class</exclude>
+                                    <exclude>**/target/*</exclude>
                                     <exclude>*Exception.class</exclude>
+                                    <exclude>ru/practicum/shareit/**/*MapperImpl.class</exclude>
                                 </excludes>
                                 <rules>
                                     <rule>
