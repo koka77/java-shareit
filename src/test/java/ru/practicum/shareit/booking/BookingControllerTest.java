@@ -38,7 +38,7 @@ class BookingControllerTest extends AbstractControllerTest {
 
     @Test
     @DirtiesContext
-    void createShouldReturnItemNotAvailableExceptionException() throws Exception {
+    void createShouldReturnItemNotAvailableException() throws Exception {
 
         userService.create(userDto);
 
@@ -49,7 +49,7 @@ class BookingControllerTest extends AbstractControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .header("X-Sharer-User-Id", 1L)
                                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test

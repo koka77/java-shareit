@@ -30,14 +30,9 @@ import ru.practicum.shareit.user.service.UserService;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class AbstractControllerTest {
-    @Autowired
-    protected BookingController bookingController;
 
     @Autowired
     protected ItemService itemService;
-
-    @Autowired
-    protected BookingService bookingService;
 
     @Autowired
     protected BookingRepository bookingRepository;
