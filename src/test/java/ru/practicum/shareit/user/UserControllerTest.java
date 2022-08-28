@@ -25,7 +25,7 @@ class UserControllerTest extends AbstractControllerTest {
     void shouldDeleteUserCorrectly() throws Exception {
         userController.create(userDto);
         mockMvc.perform(
-                        MockMvcRequestBuilders.delete("/users/1"))
+                MockMvcRequestBuilders.delete("/users/1"))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -39,9 +39,9 @@ class UserControllerTest extends AbstractControllerTest {
         userDto.setName("2update");
         userDto.setEmail("2update@user.com");
         mockMvc.perform(
-                        MockMvcRequestBuilders.post("/users")
-                                .content(objectToJson(userDto))
-                                .contentType(MediaType.APPLICATION_JSON))
+                MockMvcRequestBuilders.post("/users")
+                        .content(objectToJson(userDto))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -56,9 +56,9 @@ class UserControllerTest extends AbstractControllerTest {
         userController.create(userDto);
         UserDto updateUser = UserDto.builder().name("3update").email("3update@user.com").build();
         mockMvc.perform(
-                        MockMvcRequestBuilders.patch("/users/{userId}", 1l)
-                                .content(objectToJson(updateUser))
-                                .contentType(MediaType.APPLICATION_JSON))
+                MockMvcRequestBuilders.patch("/users/{userId}", 1L)
+                        .content(objectToJson(updateUser))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -85,9 +85,9 @@ class UserControllerTest extends AbstractControllerTest {
         userController.create(userDto3);
         UserDto updateUser = UserDto.builder().name("3update").email("3update@user.com").build();
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/users/{userId}", 1l)
-                                .content(objectToJson(updateUser))
-                                .contentType(MediaType.APPLICATION_JSON))
+                MockMvcRequestBuilders.get("/users/{userId}", 1L)
+                        .content(objectToJson(updateUser))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))

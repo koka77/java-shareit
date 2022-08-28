@@ -24,19 +24,19 @@ public class CommentMapperTest extends AbstractControllerTest {
 
     @Test
     void shouldUpdateDtoCorrectly() {
-         comment = new Comment();
+        comment = new Comment();
         comment.setItem(new Item());
-         dto = commentMapper.toCommentDto(comment);
+        dto = commentMapper.toCommentDto(comment);
 
         assertEquals(dto.getItem(), comment.getItem());
     }
 
     @Test
     void shouldConvertToBookingCorrectly() {
-         dto = new CommentDto();
+        dto = new CommentDto();
         dto.setItem(new Item());
 
-         comment = commentMapper.toComment(dto);
+        comment = commentMapper.toComment(dto);
 
         assertEquals(comment.getItem(), dto.getItem());
     }

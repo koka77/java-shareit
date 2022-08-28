@@ -121,18 +121,6 @@
 			<property name="severity" value="ignore"/>
 			<metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
 		</module>
-		<module name="GenericWhitespace">
-			<message key="ws.notPreceded" value="GenericWhitespace ''{0}'' is not preceded with whitespace."/>
-			<message key="ws.followed" value="GenericWhitespace ''{0}'' is followed by whitespace."/>
-			<message key="ws.preceded" value="GenericWhitespace ''{0}'' is preceded with whitespace."/>
-			<message key="ws.illegalFollow" value="GenericWhitespace ''{0}'' should followed by whitespace."/>
-		</module>
-		<!-- No trailing whitespace -->
-		<module name="Regexp">
-			<property name="format" value="[ \t]+$"/>
-			<property name="illegalPattern" value="true"/>
-			<property name="message" value="Trailing whitespace"/>
-		</module>
 		<module name="Indentation">
 			<property name="severity" value="ignore"/>
 			<property name="caseIndent" value="2"/>
@@ -159,10 +147,6 @@
 <!--		</module>-->
 		<module name="UnusedImports"/>
 		<module name="MethodParamPad"/>
-		<module name="NoWhitespaceBefore">
-			<property name="allowLineBreaks" value="true"/>
-			<property name="tokens" value="COMMA, SEMI, POST_INC, POST_DEC, DOT, ELLIPSIS, METHOD_REF"/>
-		</module>
 		<module name="ParenPad"/>
 		<module name="OperatorWrap">
 			<property name="severity" value="ignore"/>

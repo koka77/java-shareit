@@ -15,16 +15,18 @@ public class ItemServiceTest extends AbstractControllerTest {
 
     @Test
     void sholdThrowsItemNotFoundException() {
-        assertThrows(ItemNotFoundException.class, () -> itemService.findById(100l, 1l));
+        assertThrows(ItemNotFoundException.class, () -> itemService.findById(100L, 1L));
 
     }
+
     @Test
     void shouldThrowsUserNotBookerException() {
         UserDto userDto = userService.create(userDto2);
         itemDto.setRequestId(null);
         itemDto.setRequest(null);
         itemService.create(userDto.getId(), itemDto);
-        assertThrows(UserNotBookerException.class, () -> itemService.createComment(userDto.getId(), 1l, new CommentDto()));
+        assertThrows(UserNotBookerException.class, () -> itemService
+                .createComment(userDto.getId(), 1L, new CommentDto()));
 
     }
 }

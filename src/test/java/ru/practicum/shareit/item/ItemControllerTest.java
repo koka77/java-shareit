@@ -35,20 +35,25 @@ class ItemControllerTest extends AbstractControllerTest {
     void shouldCreateItemCorrectly() throws Exception {
         prepair();
 
-        ItemRequest request = itemRequestRepository.findById(1l).get();
-        mockMvc.perform(MockMvcRequestBuilders.post("/items").content(objectToJson(itemDto)).contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1L)).andExpect(status().isOk()).andDo(print()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)).andExpect(content().json("{\"id\":3,\"name\":\"Дрель\",\"description\":\"Простая дрель\",\"available\":true,\"requestId\":1,\"request\":" + mapper.writeValueAsString(request) + ",\"nextBooking\":null,\"lastBooking\":null,\"comments\":null}"));
+        ItemRequest request = itemRequestRepository.findById(1L).get();
+        mockMvc.perform(MockMvcRequestBuilders.post("/items").content(objectToJson(itemDto))
+                .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1L)).andExpect(status().isOk())
+                .andDo(print()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content()
+                        .json("{\"id\":3,\"name\":\"Дрель\",\"description\":\"Простая дрель\",\"available\":true,\"requestId\":1,\"request\":" + mapper
+                                .writeValueAsString(request) + ",\"nextBooking\":null,\"lastBooking\":null,\"comments\":null}"));
     }
 
     @Test
     @DirtiesContext
     void shouldCreateItemCorrectlyWithRequestId() throws Exception {
         prepair();
-        itemDto.setRequestId(1l);
+        itemDto.setRequestId(1L);
         mockMvc.perform(MockMvcRequestBuilders.post("/items")
-                        .content(objectToJson(itemDto)).contentType(MediaType.APPLICATION_JSON)
-                        .header("X-Sharer-User-Id", 1L)).andExpect(status().isOk())
+                .content(objectToJson(itemDto)).contentType(MediaType.APPLICATION_JSON)
+                .header("X-Sharer-User-Id", 1L)).andExpect(status().isOk())
                 .andDo(print()).andExpect(content()
-                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+                .contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
 
     }
 
@@ -60,10 +65,13 @@ class ItemControllerTest extends AbstractControllerTest {
         prepair();
         ItemDto updateItem = ItemDto.builder().name("Аккумуляторная дрель").build();
 
-        ItemDto expected = itemService.findById(1l, 1l);
+        ItemDto expected = itemService.findById(1L, 1L);
         expected.setName("Аккумуляторная дрель");
         expected.setComments(null);
-        mockMvc.perform(MockMvcRequestBuilders.patch("/items/{itemId}", 1l).content(objectToJson(updateItem)).contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1L)).andExpect(status().isOk()).andDo(print()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)).andExpect(content().json(mapper.writeValueAsString(expected)));
+        mockMvc.perform(MockMvcRequestBuilders.patch("/items/{itemId}", 1L).content(objectToJson(updateItem))
+                .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1L)).andExpect(status().isOk())
+                .andDo(print()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(mapper.writeValueAsString(expected)));
     }
 
     @Test
@@ -72,16 +80,21 @@ class ItemControllerTest extends AbstractControllerTest {
 
         prepair();
 
-        Collection<ItemDto> all = itemService.findAll(1l);
-        mockMvc.perform(MockMvcRequestBuilders.get("/items").header("X-Sharer-User-Id", 1L)).andExpect(status().isOk()).andDo(print()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)).andExpect(content().json(mapper.writeValueAsString(all)));
+        Collection<ItemDto> all = itemService.findAll(1L);
+        mockMvc.perform(MockMvcRequestBuilders.get("/items").header("X-Sharer-User-Id", 1L)).andExpect(status().isOk())
+                .andDo(print()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(mapper.writeValueAsString(all)));
     }
 
     @Test
     @DirtiesContext
     void shouldReturnItemById() throws Exception {
         prepair();
-        ItemDto dto = itemService.findById(1l, 1l);
-        mockMvc.perform(MockMvcRequestBuilders.get("/items/{itemId}", 1l).param("ownerId", "1").header("X-Sharer-User-Id", 1L)).andExpect(status().isOk()).andDo(print()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)).andExpect(content().json(mapper.writeValueAsString(dto)));
+        ItemDto dto = itemService.findById(1L, 1L);
+        mockMvc.perform(MockMvcRequestBuilders.get("/items/{itemId}", 1L).param("ownerId", "1")
+                .header("X-Sharer-User-Id", 1L)).andExpect(status().isOk()).andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(mapper.writeValueAsString(dto)));
     }
 
     @Test
@@ -90,7 +103,10 @@ class ItemControllerTest extends AbstractControllerTest {
 
         prepair();
         Collection<ItemDto> items = itemService.search("дРелЬ");
-        mockMvc.perform(MockMvcRequestBuilders.get("/items/search", 1l).param("text", "дРелЬ").header("X-Sharer-User-Id", 1L)).andExpect(status().isOk()).andDo(print()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)).andExpect(content().json(mapper.writeValueAsString(items)));
+        mockMvc.perform(MockMvcRequestBuilders.get("/items/search", 1L).param("text", "дРелЬ")
+                .header("X-Sharer-User-Id", 1L)).andExpect(status().isOk()).andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(mapper.writeValueAsString(items)));
     }
 
     @Test
@@ -98,9 +114,9 @@ class ItemControllerTest extends AbstractControllerTest {
     void searchItemShouldReturnEmptyList() throws Exception {
 
         prepair();
-        mockMvc.perform(MockMvcRequestBuilders.get("/items/search", 1l)
-                        .param("text", "")
-                        .header("X-Sharer-User-Id", 1L))
+        mockMvc.perform(MockMvcRequestBuilders.get("/items/search", 1L)
+                .param("text", "")
+                .header("X-Sharer-User-Id", 1L))
                 .andExpect(status().isOk()).andDo(print())
                 .andExpect(content()
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -119,12 +135,14 @@ class ItemControllerTest extends AbstractControllerTest {
         dto.setItem(itemMapper.toItem(itemDto));
         dto.setAuthorName("lalala");
         dto.setText("bbbbbb");
-        dto.getItem().setId(1l);
+        dto.getItem().setId(1L);
 
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/items/2/comment").contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1L).content(objectToJson(dto)))
+        mockMvc.perform(MockMvcRequestBuilders.post("/items/2/comment").contentType(MediaType.APPLICATION_JSON)
+                .header("X-Sharer-User-Id", 1L).content(objectToJson(dto)))
 
-                .andExpect(status().isOk()).andDo(print()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+                .andExpect(status().isOk()).andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }
 
     @DirtiesContext
@@ -140,12 +158,12 @@ class ItemControllerTest extends AbstractControllerTest {
         request.setDescription("test");
         request.setCreated(start);
         itemRequestRepository.save(request);
-        itemService.create(1l, itemDto);
+        itemService.create(1L, itemDto);
 
 
         Item item = itemMapper.toItem(itemDto);
         item.setOwner(user);
-        item.getOwner().setId(1l);
+        item.getOwner().setId(1L);
         item = itemRepository.save(item);
 
         Booking booking = new Booking();
@@ -154,7 +172,7 @@ class ItemControllerTest extends AbstractControllerTest {
         booking.setBooker(userMapper.toUser(userDto));
         booking.setStart(start);
         booking.setEnd(end);
-        booking.getBooker().setId(1l);
+        booking.getBooker().setId(1L);
         bookingRepository.save(booking);
 
 

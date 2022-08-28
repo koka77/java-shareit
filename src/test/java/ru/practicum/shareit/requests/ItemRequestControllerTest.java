@@ -39,20 +39,20 @@ class ItemRequestControllerTest extends AbstractControllerTest {
     void create() throws Exception {
 
         prepairRequest();
-        LocalDateTime start = LocalDateTime.now().plusMinutes(1l);
+        LocalDateTime start = LocalDateTime.now().plusMinutes(1L);
         ItemRequest request = new ItemRequest();
         request.setRequestor(userMapper.toUser(userDto));
         request.setDescription("one");
-        request.getRequestor().setId(1l);
+        request.getRequestor().setId(1L);
         request.setCreated(start);
         ItemRequestDto dto = itemRequestMapper.toItemRequestDto(request);
         mockMvc.perform(
-                        MockMvcRequestBuilders.post("/requests")
-                                .content(objectToJson(dto))
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .header("X-Sharer-User-Id", 1L)
-                                .accept(MediaType.APPLICATION_JSON))
+                MockMvcRequestBuilders.post("/requests")
+                        .content(objectToJson(dto))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", 1L)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
@@ -60,23 +60,23 @@ class ItemRequestControllerTest extends AbstractControllerTest {
     @DirtiesContext
     void getByRequestor() throws Exception {
         prepairRequest();
-        LocalDateTime start = LocalDateTime.now().plusMinutes(1l);
+        LocalDateTime start = LocalDateTime.now().plusMinutes(1L);
         ItemRequest request = new ItemRequest();
         request.setRequestor(userMapper.toUser(userDto));
         request.setDescription("one");
-        request.getRequestor().setId(1l);
+        request.getRequestor().setId(1L);
         request.setCreated(start);
 
         itemRequestRepository.save(request);
 
-        ItemRequestDto expected = itemRequestService.findByIdDto(1l, 1l);
+        ItemRequestDto expected = itemRequestService.findByIdDto(1L, 1L);
 
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/requests")
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .header("X-Sharer-User-Id", 1L)
-                                .accept(MediaType.APPLICATION_JSON))
+                MockMvcRequestBuilders.get("/requests")
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", 1L)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(List.of(expected))));
     }
@@ -93,42 +93,43 @@ class ItemRequestControllerTest extends AbstractControllerTest {
     void getAllShouldReturnItemListCorrectly() throws Exception {
         prepairRequest();
 
-        List<ItemRequestDto> expected = itemRequestService.getAll(1l, 1, 20);
+        List<ItemRequestDto> expected = itemRequestService.getAll(1L, 1, 20);
 
-        LocalDateTime start = LocalDateTime.now().plusMinutes(1l);
+        LocalDateTime start = LocalDateTime.now().plusMinutes(1L);
         ItemRequest request = new ItemRequest();
         request.setRequestor(userMapper.toUser(userDto));
         request.setDescription("one");
-        request.getRequestor().setId(1l);
+        request.getRequestor().setId(1L);
         request.setCreated(start);
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/requests/all")
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .header("X-Sharer-User-Id", 1L)
-                                .accept(MediaType.APPLICATION_JSON))
+                MockMvcRequestBuilders.get("/requests/all")
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", 1L)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().json(mapper.writeValueAsString(expected)));;
+                .andExpect(content().json(mapper.writeValueAsString(expected)));
+        ;
     }
 
     @Test
     @DirtiesContext
     void getAllShouldReturnNothing() throws Exception {
         prepairRequest();
-        LocalDateTime start = LocalDateTime.now().plusMinutes(1l);
+        LocalDateTime start = LocalDateTime.now().plusMinutes(1L);
         ItemRequest request = new ItemRequest();
         request.setRequestor(userMapper.toUser(userDto));
         request.setDescription("one");
-        request.getRequestor().setId(1l);
+        request.getRequestor().setId(1L);
         request.setCreated(start);
         itemRequestRepository.save(request);
 
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/requests")
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .header("X-Sharer-User-Id", 2L)
-                                .accept(MediaType.APPLICATION_JSON))
+                MockMvcRequestBuilders.get("/requests")
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", 2L)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(new ArrayList<>())));
     }
@@ -138,22 +139,22 @@ class ItemRequestControllerTest extends AbstractControllerTest {
     @DirtiesContext
     void getAllShouldCallitemRequestDtoSetItems() throws Exception {
         prepairRequest();
-        LocalDateTime start = LocalDateTime.now().plusMinutes(1l);
+        LocalDateTime start = LocalDateTime.now().plusMinutes(1L);
         ItemRequest request = new ItemRequest();
         request.setRequestor(userMapper.toUser(userDto));
         request.setDescription("one");
-        request.getRequestor().setId(1l);
+        request.getRequestor().setId(1L);
         request.setCreated(start);
         itemRequestRepository.save(request);
 
-        List<ItemRequestDto> expected = itemRequestService.getAll(2l, 1, 10);
+        List<ItemRequestDto> expected = itemRequestService.getAll(2L, 1, 10);
 
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/requests/all")
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .header("X-Sharer-User-Id", 2L)
-                                .accept(MediaType.APPLICATION_JSON))
+                MockMvcRequestBuilders.get("/requests/all")
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", 2L)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(expected)));
     }
@@ -163,22 +164,22 @@ class ItemRequestControllerTest extends AbstractControllerTest {
     void getById() throws Exception {
         prepairRequest();
 
-        LocalDateTime start = LocalDateTime.now().plusMinutes(1l);
+        LocalDateTime start = LocalDateTime.now().plusMinutes(1L);
         ItemRequest request = new ItemRequest();
         request.setRequestor(userMapper.toUser(userDto));
         request.setDescription("one");
-        request.getRequestor().setId(1l);
+        request.getRequestor().setId(1L);
         request.setCreated(start);
         itemRequestMapper.toItemRequestDto(itemRequestRepository.save(request));
 
-        ItemRequestDto expected = itemRequestService.findByIdDto(1l, 1l);
+        ItemRequestDto expected = itemRequestService.findByIdDto(1L, 1L);
 
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/requests/1")
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .header("X-Sharer-User-Id", 1L)
-                                .accept(MediaType.APPLICATION_JSON))
+                MockMvcRequestBuilders.get("/requests/1")
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", 1L)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(expected)));
     }
@@ -196,12 +197,12 @@ class ItemRequestControllerTest extends AbstractControllerTest {
         userDto3 = userService.create(userDto3);
 
 
-        bookingDto.setItemId(1l);
-        bookingDto2.setItemId(2l);
+        bookingDto.setItemId(1L);
+        bookingDto2.setItemId(2L);
 
 
-        LocalDateTime start = LocalDateTime.now().plusMinutes(1l);
-        LocalDateTime end = LocalDateTime.now().plusMinutes(2l);
+        LocalDateTime start = LocalDateTime.now().plusMinutes(1L);
+        LocalDateTime end = LocalDateTime.now().plusMinutes(2L);
 
         bookingDto.setStart(start);
         bookingDto.setEnd(end);

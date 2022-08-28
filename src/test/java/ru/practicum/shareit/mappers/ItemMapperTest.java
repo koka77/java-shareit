@@ -19,9 +19,10 @@ public class ItemMapperTest extends AbstractControllerTest {
     @DirtiesContext
     void shouldUpdateItemFromDtoCorrectly() {
         Item item = new Item();
-         itemMapper.updateItemFromDto(itemDto, item);
+        itemMapper.updateItemFromDto(itemDto, item);
         assertEquals(item.getName(), itemDto.getName());
     }
+
     @Test
     @DirtiesContext
     void shouldReturnNull() {
