@@ -58,7 +58,6 @@ class BookingControllerTest extends AbstractControllerTest {
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .header("X-Sharer-User-Id", 2L)
                                     .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk());
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
