@@ -152,7 +152,7 @@ class BookingControllerTest extends AbstractControllerTest {
 
         createBooking();
 
-        Booking booking = bookingRepository.findById(1l).get();
+        Booking booking = bookingRepository.findById(1L).get();
         booking.setStatus(BookingStatus.REJECTED);
         bookingRepository.save(booking);
 
@@ -169,7 +169,7 @@ class BookingControllerTest extends AbstractControllerTest {
     @DirtiesContext
     void getBookingById() throws Exception {
         createBooking();
-        BookingApproveDto dto = bookingService.getBookingById(1l, 1l);
+        BookingApproveDto dto = bookingService.getBookingById(1l, 1L);
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/bookings/1")
                                 .characterEncoding(StandardCharsets.UTF_8)
@@ -184,7 +184,7 @@ class BookingControllerTest extends AbstractControllerTest {
     @DirtiesContext
     void getBookingByIdShouldReturnUserHasNotPermissionException() throws Exception {
         createBooking();
-        BookingApproveDto dto = bookingService.getBookingById(1l, 1l);
+        BookingApproveDto dto = bookingService.getBookingById(1l, 1L);
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/bookings/1")
                                 .characterEncoding(StandardCharsets.UTF_8)
@@ -445,10 +445,10 @@ class BookingControllerTest extends AbstractControllerTest {
     void getBookingCurrentOwnerApprovedShouldReturnException() throws Exception {
         createBooking();
 
-        Booking booking1 = bookingRepository.findById(1l).get();
+        Booking booking1 = bookingRepository.findById(1L).get();
         booking1.setStatus(BookingStatus.REJECTED);
         bookingRepository.save(booking1);
-        Booking booking2 = bookingRepository.findById(1l).get();
+        Booking booking2 = bookingRepository.findById(1L).get();
         booking2.setStatus(BookingStatus.REJECTED);
         bookingRepository.save(booking2);
 
@@ -492,15 +492,15 @@ class BookingControllerTest extends AbstractControllerTest {
         userService.create(userDto3);
 
 
-        itemService.create(1l, itemDto);
-        itemService.create(2l, itemDto2);
+        itemService.create(1L, itemDto);
+        itemService.create(2L, itemDto2);
 
-        bookingDto.setItemId(1l);
-        bookingDto2.setItemId(2l);
+        bookingDto.setItemId(1L);
+        bookingDto2.setItemId(2L);
 
 
-        LocalDateTime start = LocalDateTime.now().plusMinutes(1l);
-        LocalDateTime end = LocalDateTime.now().plusMinutes(2l);
+        LocalDateTime start = LocalDateTime.now().plusMinutes(1L);
+        LocalDateTime end = LocalDateTime.now().plusMinutes(2L);
 
         bookingDto.setStart(start);
         bookingDto.setEnd(end);
