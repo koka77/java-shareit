@@ -57,7 +57,7 @@ class BookingControllerTest extends AbstractControllerTest {
                                     .characterEncoding(StandardCharsets.UTF_8)
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .header("X-Sharer-User-Id", 2L)
-                                    .accept(MediaType.APPLICATION_JSON))
+                                    .accept(MediaType.APPLICATION_JSON));
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
