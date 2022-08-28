@@ -96,7 +96,7 @@ public class ItemServiceImpl implements ItemService {
                             .isEmpty() ? null : bookingMapper.toBookingDto(bookingRepository
                             .last(itemDto.getId(), ownerId).get(0)));
                 })
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     @Override
