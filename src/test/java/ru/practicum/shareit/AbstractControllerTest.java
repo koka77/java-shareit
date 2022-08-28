@@ -34,12 +34,6 @@ public class AbstractControllerTest {
     protected BookingController bookingController;
 
     @Autowired
-    protected UserService userService;
-
-    @Autowired
-    protected UserRepository userRepository;
-
-    @Autowired
     protected ItemService itemService;
 
     @Autowired

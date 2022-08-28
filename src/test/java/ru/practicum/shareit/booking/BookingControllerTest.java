@@ -1,13 +1,18 @@
 package ru.practicum.shareit.booking;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.practicum.shareit.AbstractControllerTest;
 import ru.practicum.shareit.booking.dto.BookingApproveDto;
+import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
+import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.service.UserService;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -20,47 +25,48 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext
 class BookingControllerTest extends AbstractControllerTest {
 
+    @Autowired
+    BookingMapper bookingMapper;
+
+    @Autowired
+    BookingController bookingController;
+
+    @Autowired
+    BookingService bookingService;
+
+    @Autowired
+    UserService userService;
 
     @Test
     @DirtiesContext
     void createShouldReturnItemNotAvailableExceptionException() throws Exception {
 
-        try {
-            createBooking();
+        userService.create(userDto);
 
-            Booking booking = bookingRepository.findById(1L).get();
-            booking.getItem().setAvailable(false);
-            bookingRepository.save(booking);
-
-            mockMvc.perform(
-                            MockMvcRequestBuilders.post("/bookings")
-                                    .content(objectToJson(bookingDto))
-                                    .characterEncoding(StandardCharsets.UTF_8)
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .header("X-Sharer-User-Id", 2L)
-                                    .accept(MediaType.APPLICATION_JSON));
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post("/bookings")
+                                .content(objectToJson(bookingDto))
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 1L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     @DirtiesContext
     void createShouldReturnOk() throws Exception {
 
-        try {
-            createBooking();
+        createBooking();
 
-            mockMvc.perform(
-                            MockMvcRequestBuilders.post("/bookings")
-                                    .content(objectToJson(bookingDto))
-                                    .characterEncoding(StandardCharsets.UTF_8)
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .header("X-Sharer-User-Id", 2L)
-                                    .accept(MediaType.APPLICATION_JSON));
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post("/bookings")
+                                .content(objectToJson(bookingDto))
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 2L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -80,12 +86,7 @@ class BookingControllerTest extends AbstractControllerTest {
     @Test
     @DirtiesContext
     void createShouldReturnUserHasNotPermissionException() throws Exception {
-        try {
-            createBooking();
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
-
+        createBooking();
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/bookings")
                                 .content(objectToJson(bookingDto))
@@ -100,36 +101,30 @@ class BookingControllerTest extends AbstractControllerTest {
     @DirtiesContext
     void approveStatusIsOk() throws Exception {
 
-        try {
-            createBooking();
-            mockMvc.perform(
-                            MockMvcRequestBuilders.patch("/bookings/1?approved=true")
-                                    .characterEncoding(StandardCharsets.UTF_8)
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .header("X-Sharer-User-Id", 1L)
-                                    .accept(MediaType.APPLICATION_JSON));
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
+        createBooking();
 
+        mockMvc.perform(
+                        MockMvcRequestBuilders.patch("/bookings/1?approved=true")
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 1L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
     @Test
     @DirtiesContext
     void approveStatusReject() throws Exception {
 
-        try {
-            createBooking();
+        createBooking();
 
-            mockMvc.perform(
-                            MockMvcRequestBuilders.patch("/bookings/1?approved=false")
-                                    .characterEncoding(StandardCharsets.UTF_8)
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .header("X-Sharer-User-Id", 1L)
-                                    .accept(MediaType.APPLICATION_JSON));
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
+        mockMvc.perform(
+                        MockMvcRequestBuilders.patch("/bookings/1?approved=false")
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 1L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
 
@@ -137,11 +132,7 @@ class BookingControllerTest extends AbstractControllerTest {
     @DirtiesContext
     void approveStatusShouldReturnException() throws Exception {
 
-        try {
-            createBooking();
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
+        createBooking();
 
         mockMvc.perform(
                         MockMvcRequestBuilders.patch("/bookings/1?approved=false")
@@ -156,64 +147,48 @@ class BookingControllerTest extends AbstractControllerTest {
     @DirtiesContext
     void approveStatusIsBad() throws Exception {
 
-        try {
-            createBooking();
+        createBooking();
 
+        Booking booking = bookingRepository.findById(1l).get();
+        booking.setStatus(BookingStatus.REJECTED);
+        bookingRepository.save(booking);
 
-            Booking booking = bookingRepository.findById(1L).get();
-            booking.setStatus(BookingStatus.REJECTED);
-            bookingRepository.save(booking);
-
-            mockMvc.perform(
-                            MockMvcRequestBuilders.patch("/bookings/1?approved=true")
-                                    .characterEncoding(StandardCharsets.UTF_8)
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .header("X-Sharer-User-Id", 1L)
-                                    .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isBadRequest());
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
+        mockMvc.perform(
+                        MockMvcRequestBuilders.patch("/bookings/1?approved=true")
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 1L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     @DirtiesContext
     void getBookingById() throws Exception {
-        try {
-            createBooking();
-
-
-            BookingApproveDto dto = bookingService.getBookingById(1L, 1L);
-            mockMvc.perform(
-                            MockMvcRequestBuilders.get("/bookings/1")
-                                    .characterEncoding(StandardCharsets.UTF_8)
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .header("X-Sharer-User-Id", 1L)
-                                    .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(content().json(mapper.writeValueAsString(dto)));
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
+        createBooking();
+        BookingApproveDto dto = bookingService.getBookingById(1l, 1l);
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/bookings/1")
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 1L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(dto)));
     }
 
     @Test
     @DirtiesContext
     void getBookingByIdShouldReturnUserHasNotPermissionException() throws Exception {
-        try {
-            createBooking();
-
-            BookingApproveDto dto = bookingService.getBookingById(1L, 1L);
-            mockMvc.perform(
-                            MockMvcRequestBuilders.get("/bookings/1")
-                                    .characterEncoding(StandardCharsets.UTF_8)
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .header("X-Sharer-User-Id", 3L)
-                                    .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isNotFound());
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
+        createBooking();
+        BookingApproveDto dto = bookingService.getBookingById(1l, 1l);
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/bookings/1")
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 3L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -232,324 +207,258 @@ class BookingControllerTest extends AbstractControllerTest {
     @Test
     @DirtiesContext
     void getBookingCurrentUser() throws Exception {
-        try {
-            createBooking();
-            List<BookingApproveDto> dtoList = bookingService
-                    .getBookingByCurrentUser(1L, "ALL", 1, 20);
+        createBooking();
 
-            mockMvc.perform(
-                            MockMvcRequestBuilders.get("/bookings?state=ALL")
-                                    .characterEncoding(StandardCharsets.UTF_8)
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .header("X-Sharer-User-Id", 1L)
-                                    .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(content().json(mapper.writeValueAsString(dtoList)));
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
+        List<BookingApproveDto> dtoList = bookingService
+                .getBookingByCurrentUser(1l, "ALL", 1, 20);
 
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/bookings?state=ALL")
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 1L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(dtoList)));
     }
 
 
     @Test
     @DirtiesContext
     void getBookingCurrentUserFuture() throws Exception {
-        try {
-            createBooking();
+        createBooking();
 
-            List<BookingApproveDto> dtoList = bookingService
-                    .getBookingByCurrentUser(1L, "FUTURE", 1, 20);
+        List<BookingApproveDto> dtoList = bookingService
+                .getBookingByCurrentUser(1l, "FUTURE", 1, 20);
 
-            mockMvc.perform(
-                            MockMvcRequestBuilders.get("/bookings?state=FUTURE")
-                                    .characterEncoding(StandardCharsets.UTF_8)
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .header("X-Sharer-User-Id", 1L)
-                                    .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(content().json(mapper.writeValueAsString(dtoList)));
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/bookings?state=FUTURE")
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 1L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(dtoList)));
     }
 
     @Test
     @DirtiesContext
     void getBookingCurrentUserCurrent() throws Exception {
+        createBooking();
 
-        try {
-            createBooking();
+        List<BookingApproveDto> dtoList = bookingService
+                .getBookingByCurrentUser(1l, "CURRENT", 1, 20);
 
-            List<BookingApproveDto> dtoList = bookingService
-                    .getBookingByCurrentUser(1L, "CURRENT", 1, 20);
-
-            mockMvc.perform(
-                            MockMvcRequestBuilders.get("/bookings?state=CURRENT")
-                                    .characterEncoding(StandardCharsets.UTF_8)
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .header("X-Sharer-User-Id", 1L)
-                                    .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(content().json(mapper.writeValueAsString(dtoList)));
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/bookings?state=CURRENT")
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 1L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(dtoList)));
     }
 
     @Test
     @DirtiesContext
     void getBookingCurrentUserPast() throws Exception {
+        createBooking();
 
-        try {
-            createBooking();
+        List<BookingApproveDto> dtoList = bookingService
+                .getBookingByCurrentUser(1l, "PAST", 1, 20);
 
-            List<BookingApproveDto> dtoList = bookingService
-                    .getBookingByCurrentUser(1L, "PAST", 1, 20);
-
-            mockMvc.perform(
-                            MockMvcRequestBuilders.get("/bookings?state=PAST")
-                                    .characterEncoding(StandardCharsets.UTF_8)
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .header("X-Sharer-User-Id", 1L)
-                                    .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(content().json(mapper.writeValueAsString(dtoList)));
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/bookings?state=PAST")
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 1L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(dtoList)));
     }
 
     @Test
     @DirtiesContext
     void getBookingCurrentUserRejected() throws Exception {
+        createBooking();
 
-        try {
-            createBooking();
+        List<BookingApproveDto> dtoList = bookingService
+                .getBookingByCurrentUser(1l, "REJECTED", 1, 20);
 
-            List<BookingApproveDto> dtoList = bookingService
-                    .getBookingByCurrentUser(1L, "REJECTED", 1, 20);
-
-            mockMvc.perform(
-                            MockMvcRequestBuilders.get("/bookings?state=REJECTED")
-                                    .characterEncoding(StandardCharsets.UTF_8)
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .header("X-Sharer-User-Id", 1L)
-                                    .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(content().json(mapper.writeValueAsString(dtoList)));
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/bookings?state=REJECTED")
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 1L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(dtoList)));
     }
 
     @Test
     @DirtiesContext
     void getBookingCurrentUserWaiting() throws Exception {
+        createBooking();
 
-        try {
-            createBooking();
+        List<BookingApproveDto> dtoList = bookingService
+                .getBookingByCurrentUser(1l, "WAITING", 1, 20);
 
-            List<BookingApproveDto> dtoList = bookingService
-                    .getBookingByCurrentUser(1L, "WAITING", 1, 20);
-
-            mockMvc.perform(
-                            MockMvcRequestBuilders.get("/bookings?state=WAITING")
-                                    .characterEncoding(StandardCharsets.UTF_8)
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .header("X-Sharer-User-Id", 1L)
-                                    .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(content().json(mapper.writeValueAsString(dtoList)));
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/bookings?state=WAITING")
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 1L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(dtoList)));
     }
 
     @Test
     @DirtiesContext
     void getBookingCurrentUserShouldReturnUnsupportedStatusExceptionException() throws Exception {
-        try {
-            createBooking();
+        createBooking();
 
-            mockMvc.perform(
-                            MockMvcRequestBuilders.get("/bookings?state=ERROR")
-                                    .characterEncoding(StandardCharsets.UTF_8)
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .header("X-Sharer-User-Id", 1L)
-                                    .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isInternalServerError());
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/bookings?state=ERROR")
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 1L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError());
     }
 
     @Test
     @DirtiesContext
     void getBookingCurrentUserShouldReturnException() throws Exception {
-        try {
-            createBooking();
+        createBooking();
 
-            List<BookingApproveDto> dtoList = bookingService
-                    .getBookingByCurrentUser(1L, "ALL", 1, 20);
+        List<BookingApproveDto> dtoList = bookingService
+                .getBookingByCurrentUser(1l, "ALL", 1, 20);
 
-            mockMvc.perform(
-                            MockMvcRequestBuilders.get("/bookings?state=ALL")
-                                    .characterEncoding(StandardCharsets.UTF_8)
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .header("X-Sharer-User-Id", 100L)
-                                    .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isNotFound());
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/bookings?state=ALL")
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 100L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
     @Test
     @DirtiesContext
     void getBookingCurrentOwnerAll() throws Exception {
+        createBooking();
 
-        try {
-            createBooking();
+        List<BookingApproveDto> dtoList = bookingService
+                .getBookingByCurrentOwner(1l, "ALL", 1, 20);
 
-            List<BookingApproveDto> dtoList = bookingService
-                    .getBookingByCurrentOwner(1L, "ALL", 1, 20);
-
-            mockMvc.perform(
-                            MockMvcRequestBuilders.get("/bookings/owner?state=ALL")
-                                    .characterEncoding(StandardCharsets.UTF_8)
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .header("X-Sharer-User-Id", 1L)
-                                    .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(content().json(mapper.writeValueAsString(dtoList)));
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/bookings/owner?state=ALL")
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 1L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(dtoList)));
     }
 
 
     @Test
     @DirtiesContext
     void getBookingCurrentOwnerFuture() throws Exception {
+        createBooking();
 
-        try {
-            createBooking();
-            List<BookingApproveDto> dtoList = bookingService
-                    .getBookingByCurrentOwner(1L, "FUTURE", 1, 20);
+        List<BookingApproveDto> dtoList = bookingService
+                .getBookingByCurrentOwner(1l, "FUTURE", 1, 20);
 
-            mockMvc.perform(
-                            MockMvcRequestBuilders.get("/bookings/owner?state=FUTURE")
-                                    .characterEncoding(StandardCharsets.UTF_8)
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .header("X-Sharer-User-Id", 1L)
-                                    .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(content().json(mapper.writeValueAsString(dtoList)));
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
-
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/bookings/owner?state=FUTURE")
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 1L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(dtoList)));
     }
 
 
     @Test
     @DirtiesContext
     void getBookingCurrentOwnerCurrent() throws Exception {
+        createBooking();
 
-        try {
-            createBooking();
-            List<BookingApproveDto> dtoList = bookingService
-                    .getBookingByCurrentOwner(1L, "CURRENT", 1, 20);
+        List<BookingApproveDto> dtoList = bookingService
+                .getBookingByCurrentOwner(1l, "CURRENT", 1, 20);
 
-            mockMvc.perform(
-                            MockMvcRequestBuilders.get("/bookings/owner?state=CURRENT")
-                                    .characterEncoding(StandardCharsets.UTF_8)
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .header("X-Sharer-User-Id", 1L)
-                                    .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(content().json(mapper.writeValueAsString(dtoList)));
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
-
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/bookings/owner?state=CURRENT")
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 1L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(dtoList)));
     }
 
 
     @Test
     @DirtiesContext
     void getBookingCurrentOwnerPast() throws Exception {
+        createBooking();
 
-        try {
-            createBooking();
-            List<BookingApproveDto> dtoList = bookingService
-                    .getBookingByCurrentOwner(1L, "PAST", 1, 20);
+        List<BookingApproveDto> dtoList = bookingService
+                .getBookingByCurrentOwner(1l, "PAST", 1, 20);
 
-            mockMvc.perform(
-                            MockMvcRequestBuilders.get("/bookings/owner?state=PAST")
-                                    .characterEncoding(StandardCharsets.UTF_8)
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .header("X-Sharer-User-Id", 1L)
-                                    .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(content().json(mapper.writeValueAsString(dtoList)));
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
-
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/bookings/owner?state=PAST")
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 1L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(dtoList)));
     }
 
     @Test
     @DirtiesContext
     void getBookingCurrentOwnerApproved() throws Exception {
+        createBooking();
 
-        try {
-            createBooking();
+        List<BookingApproveDto> dtoList = bookingService
+                .getBookingByCurrentOwner(1l, "APPROVED", 1, 20);
 
-            List<BookingApproveDto> dtoList = bookingService
-                    .getBookingByCurrentOwner(1L, "APPROVED", 1, 20);
-
-            mockMvc.perform(
-                            MockMvcRequestBuilders.get("/bookings/owner?state=APPROVED")
-                                    .characterEncoding(StandardCharsets.UTF_8)
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .header("X-Sharer-User-Id", 1L)
-                                    .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(content().json(mapper.writeValueAsString(dtoList)));
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/bookings/owner?state=APPROVED")
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 1L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(dtoList)));
     }
 
     @Test
     @DirtiesContext
     void getBookingCurrentOwnerApprovedShouldReturnException() throws Exception {
+        createBooking();
 
-        try {
-            createBooking();
+        Booking booking1 = bookingRepository.findById(1l).get();
+        booking1.setStatus(BookingStatus.REJECTED);
+        bookingRepository.save(booking1);
+        Booking booking2 = bookingRepository.findById(1l).get();
+        booking2.setStatus(BookingStatus.REJECTED);
+        bookingRepository.save(booking2);
 
-            Booking booking1 = bookingRepository.findById(1L).get();
-            booking1.setStatus(BookingStatus.REJECTED);
-            bookingRepository.save(booking1);
-            Booking booking2 = bookingRepository.findById(1L).get();
-            booking2.setStatus(BookingStatus.REJECTED);
-            bookingRepository.save(booking2);
+        List<BookingApproveDto> dtoList = bookingService
+                .getBookingByCurrentOwner(1l, "APPROVED", 1, 20);
 
-            List<BookingApproveDto> dtoList = bookingService
-                    .getBookingByCurrentOwner(1L, "APPROVED", 1, 20);
-
-            mockMvc.perform(
-                            MockMvcRequestBuilders.patch("/bookings/owner?approved=true")
-                                    .characterEncoding(StandardCharsets.UTF_8)
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .header("X-Sharer-User-Id", 1L)
-                                    .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isBadRequest());
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
+        mockMvc.perform(
+                        MockMvcRequestBuilders.patch("/bookings/owner?approved=true")
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 1L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
 
@@ -557,51 +466,44 @@ class BookingControllerTest extends AbstractControllerTest {
     @DirtiesContext
     void getBookingCurrentOwnerShouldReturnUnsupportedStatusExceptionException()
             throws Exception {
+        createBooking();
 
-        try {
-            createBooking();
-
-            mockMvc.perform(
-                            MockMvcRequestBuilders
-                                    .get("/bookings/owner?approved=true&state=ERROR")
-                                    .characterEncoding(StandardCharsets.UTF_8)
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .header("X-Sharer-User-Id", 1L)
-                                    .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isInternalServerError());
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
+        mockMvc.perform(
+                        MockMvcRequestBuilders
+                                .get("/bookings/owner?approved=true&state=ERROR")
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-Sharer-User-Id", 1L)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError());
     }
 
+    @DirtiesContext
     private void createBooking() {
-        try {
-            userRepository.save(userMapper.toUser(userDto));
-            userRepository.save(userMapper.toUser(userDto2));
-            userRepository.save(userMapper.toUser(userDto3));
-
-            itemService.create(1L, itemDto);
-            itemService.create(2L, itemDto2);
-
-            bookingDto.setItemId(1L);
-            bookingDto2.setItemId(2L);
+        userService.create(userDto);
+        userService.create(userDto2);
+        userService.create(userDto3);
 
 
-            LocalDateTime start = LocalDateTime.now().plusMinutes(1L);
-            LocalDateTime end = LocalDateTime.now().plusMinutes(2L);
+        itemService.create(1l, itemDto);
+        itemService.create(2l, itemDto2);
 
-            bookingDto.setStart(start);
-            bookingDto.setEnd(end);
-            bookingDto.setStatus(BookingStatus.WAITING);
+        bookingDto.setItemId(1l);
+        bookingDto2.setItemId(2l);
 
-            bookingDto2.setStart(start.plusMinutes(1));
-            bookingDto2.setEnd(end.plusMinutes(1));
-            bookingDto2.setStatus(BookingStatus.WAITING);
 
-            bookingService.create(2L, bookingDto);
-            bookingService.create(1L, bookingDto2);
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
+        LocalDateTime start = LocalDateTime.now().plusMinutes(1l);
+        LocalDateTime end = LocalDateTime.now().plusMinutes(2l);
+
+        bookingDto.setStart(start);
+        bookingDto.setEnd(end);
+        bookingDto.setStatus(BookingStatus.WAITING);
+
+        bookingDto2.setStart(start.plusMinutes(1));
+        bookingDto2.setEnd(end.plusMinutes(1));
+        bookingDto2.setStatus(BookingStatus.WAITING);
+
+        bookingService.create(2l, bookingDto);
+        bookingService.create(1l, bookingDto2);
     }
 }
