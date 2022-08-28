@@ -169,7 +169,7 @@ class BookingControllerTest extends AbstractControllerTest {
     @DirtiesContext
     void getBookingById() throws Exception {
         createBooking();
-        BookingApproveDto dto = bookingService.getBookingById(1l, 1L);
+        BookingApproveDto dto = bookingService.getBookingById(1L, 1L);
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/bookings/1")
                                 .characterEncoding(StandardCharsets.UTF_8)
@@ -184,7 +184,7 @@ class BookingControllerTest extends AbstractControllerTest {
     @DirtiesContext
     void getBookingByIdShouldReturnUserHasNotPermissionException() throws Exception {
         createBooking();
-        BookingApproveDto dto = bookingService.getBookingById(1l, 1L);
+        BookingApproveDto dto = bookingService.getBookingById(1L, 1L);
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/bookings/1")
                                 .characterEncoding(StandardCharsets.UTF_8)
@@ -213,7 +213,7 @@ class BookingControllerTest extends AbstractControllerTest {
         createBooking();
 
         List<BookingApproveDto> dtoList = bookingService
-                .getBookingByCurrentUser(1l, "ALL", 1, 20);
+                .getBookingByCurrentUser(1L, "ALL", 1, 20);
 
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/bookings?state=ALL")
@@ -232,7 +232,7 @@ class BookingControllerTest extends AbstractControllerTest {
         createBooking();
 
         List<BookingApproveDto> dtoList = bookingService
-                .getBookingByCurrentUser(1l, "FUTURE", 1, 20);
+                .getBookingByCurrentUser(1L, "FUTURE", 1, 20);
 
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/bookings?state=FUTURE")
@@ -250,7 +250,7 @@ class BookingControllerTest extends AbstractControllerTest {
         createBooking();
 
         List<BookingApproveDto> dtoList = bookingService
-                .getBookingByCurrentUser(1l, "CURRENT", 1, 20);
+                .getBookingByCurrentUser(1L, "CURRENT", 1, 20);
 
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/bookings?state=CURRENT")
@@ -268,7 +268,7 @@ class BookingControllerTest extends AbstractControllerTest {
         createBooking();
 
         List<BookingApproveDto> dtoList = bookingService
-                .getBookingByCurrentUser(1l, "PAST", 1, 20);
+                .getBookingByCurrentUser(1L, "PAST", 1, 20);
 
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/bookings?state=PAST")
@@ -286,7 +286,7 @@ class BookingControllerTest extends AbstractControllerTest {
         createBooking();
 
         List<BookingApproveDto> dtoList = bookingService
-                .getBookingByCurrentUser(1l, "REJECTED", 1, 20);
+                .getBookingByCurrentUser(1L, "REJECTED", 1, 20);
 
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/bookings?state=REJECTED")
@@ -304,7 +304,7 @@ class BookingControllerTest extends AbstractControllerTest {
         createBooking();
 
         List<BookingApproveDto> dtoList = bookingService
-                .getBookingByCurrentUser(1l, "WAITING", 1, 20);
+                .getBookingByCurrentUser(1L, "WAITING", 1, 20);
 
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/bookings?state=WAITING")
@@ -336,7 +336,7 @@ class BookingControllerTest extends AbstractControllerTest {
         createBooking();
 
         List<BookingApproveDto> dtoList = bookingService
-                .getBookingByCurrentUser(1l, "ALL", 1, 20);
+                .getBookingByCurrentUser(1L, "ALL", 1, 20);
 
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/bookings?state=ALL")
@@ -353,7 +353,7 @@ class BookingControllerTest extends AbstractControllerTest {
         createBooking();
 
         List<BookingApproveDto> dtoList = bookingService
-                .getBookingByCurrentOwner(1l, "ALL", 1, 20);
+                .getBookingByCurrentOwner(1L, "ALL", 1, 20);
 
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/bookings/owner?state=ALL")
@@ -372,7 +372,7 @@ class BookingControllerTest extends AbstractControllerTest {
         createBooking();
 
         List<BookingApproveDto> dtoList = bookingService
-                .getBookingByCurrentOwner(1l, "FUTURE", 1, 20);
+                .getBookingByCurrentOwner(1L, "FUTURE", 1, 20);
 
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/bookings/owner?state=FUTURE")
@@ -391,7 +391,7 @@ class BookingControllerTest extends AbstractControllerTest {
         createBooking();
 
         List<BookingApproveDto> dtoList = bookingService
-                .getBookingByCurrentOwner(1l, "CURRENT", 1, 20);
+                .getBookingByCurrentOwner(1L, "CURRENT", 1, 20);
 
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/bookings/owner?state=CURRENT")
@@ -410,7 +410,7 @@ class BookingControllerTest extends AbstractControllerTest {
         createBooking();
 
         List<BookingApproveDto> dtoList = bookingService
-                .getBookingByCurrentOwner(1l, "PAST", 1, 20);
+                .getBookingByCurrentOwner(1L, "PAST", 1, 20);
 
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/bookings/owner?state=PAST")
@@ -428,7 +428,7 @@ class BookingControllerTest extends AbstractControllerTest {
         createBooking();
 
         List<BookingApproveDto> dtoList = bookingService
-                .getBookingByCurrentOwner(1l, "APPROVED", 1, 20);
+                .getBookingByCurrentOwner(1L, "APPROVED", 1, 20);
 
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/bookings/owner?state=APPROVED")
@@ -453,7 +453,7 @@ class BookingControllerTest extends AbstractControllerTest {
         bookingRepository.save(booking2);
 
         List<BookingApproveDto> dtoList = bookingService
-                .getBookingByCurrentOwner(1l, "APPROVED", 1, 20);
+                .getBookingByCurrentOwner(1L, "APPROVED", 1, 20);
 
         mockMvc.perform(
                         MockMvcRequestBuilders.patch("/bookings/owner?approved=true")
@@ -510,7 +510,7 @@ class BookingControllerTest extends AbstractControllerTest {
         bookingDto2.setEnd(end.plusMinutes(1));
         bookingDto2.setStatus(BookingStatus.WAITING);
 
-        bookingService.create(2l, bookingDto);
-        bookingService.create(1l, bookingDto2);
+        bookingService.create(2L, bookingDto);
+        bookingService.create(1L, bookingDto2);
     }
 }
