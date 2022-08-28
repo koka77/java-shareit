@@ -147,9 +147,6 @@
                         <systemPropertyVariables>
                             <spring.profiles.active>test</spring.profiles.active>
                         </systemPropertyVariables>
-                        <excludes>
-                            <exclude>ru/practicum/shareit/**/*MapperImpl.class</exclude>
-                        </excludes>
                     </configuration>
                 </plugin>
                 <plugin>
