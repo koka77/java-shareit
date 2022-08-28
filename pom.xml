@@ -93,6 +93,12 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.5.1</version>
                 <configuration>
+                    <excludes>
+                        <exclude>*MapperImpl.class</exclude>
+                        <exclude>**/target/*</exclude>
+                        <exclude>*Exception.class</exclude>
+                        <exclude>ru/practicum/shareit/**/*MapperImpl.class</exclude>
+                    </excludes>
                     <source>11</source>
                     <target>11</target>
                     <annotationProcessorPaths>
@@ -123,6 +129,10 @@
                         <exclude>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
+                            <exclude>*MapperImpl.class</exclude>
+                            <exclude>**/target/*</exclude>
+                            <exclude>*Exception.class</exclude>
+                            <exclude>ru/practicum/shareit/**/*MapperImpl.class</exclude>
                         </exclude>
                     </excludes>
                 </configuration>
@@ -137,6 +147,9 @@
                         <systemPropertyVariables>
                             <spring.profiles.active>test</spring.profiles.active>
                         </systemPropertyVariables>
+                        <excludes>
+                            <exclude>ru/practicum/shareit/**/*MapperImpl.class</exclude>
+                        </excludes>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -148,6 +161,9 @@
                         <failOnViolation>true</failOnViolation>
                         <logViolationsToConsole>true</logViolationsToConsole>
                         <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                        <excludes>
+                            <exclude>ru/practicum/shareit/**/*MapperImpl.class</exclude>
+                        </excludes>
                     </configuration>
                     <executions>
                         <execution>
@@ -187,6 +203,9 @@
                     <version>0.8.8</version>
                     <configuration>
                         <output>file</output>
+                        <excludes>
+                            <exclude>ru/practicum/shareit/**/*MapperImpl.class</exclude>
+                        </excludes>
                     </configuration>
                     <executions>
                         <execution>
