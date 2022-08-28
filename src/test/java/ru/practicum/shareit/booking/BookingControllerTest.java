@@ -483,13 +483,9 @@ class BookingControllerTest extends AbstractControllerTest {
 
     @DirtiesContext
     private void createBooking() {
-        userRepository.deleteAll();;
+
         itemRepository.deleteAll();
         bookingRepository.deleteAll();
-
-        userService.create(userDto);
-        userService.create(userDto2);
-        userService.create(userDto3);
 
 
         itemService.create(1L, itemDto);

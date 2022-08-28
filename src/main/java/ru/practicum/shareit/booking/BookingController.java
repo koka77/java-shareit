@@ -28,7 +28,6 @@ public class BookingController {
     }
 
     @PostMapping()
-    @ExceptionHandler(DataIntegrityViolationException.class)
     public BookingDto create(@RequestHeader("X-Sharer-User-Id") long userId,
                              @RequestBody @Valid BookingDto bookingDto) {
 
@@ -37,7 +36,6 @@ public class BookingController {
 
 
     @PatchMapping("/{bookingId}")
-    @ExceptionHandler(DataIntegrityViolationException.class)
     BookingApproveDto approveStatus(@Min(1) @RequestHeader("X-Sharer-User-Id") long userId,
                                     @PathVariable Long bookingId,
                                     @RequestParam boolean approved) {
