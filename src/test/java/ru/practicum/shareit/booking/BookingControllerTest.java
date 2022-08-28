@@ -474,7 +474,7 @@ class BookingControllerTest extends AbstractControllerTest {
             userService.create(userDto2);
             userService.create(userDto3);
         }catch (RuntimeException e){
-
+            e.printStackTrace();
         }
 
         itemService.create(1L, itemDto);
