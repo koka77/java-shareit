@@ -84,17 +84,17 @@ public class BookingServiceImpl implements BookingService {
 
             switch (status) {
                 case FUTURE:
-                    bookingApproveDtos = bookingRepository.findAllByBookerInFuture(owner, pageRequest);
+                    bookingApproveDtos = bookingRepository.findAllByBookerInFuture(owner, pageRequest).toList();
                     break;
                 case WAITING:
                 case REJECTED:
                 case APPROVED:
-                    bookingApproveDtos = bookingRepository.findAllByItemOwnerAndStatus(owner, status, pageRequest);
+                    bookingApproveDtos = bookingRepository.findAllByItemOwnerAndStatus(owner, status, pageRequest).toList();
                     break;
                 case CURRENT:
                     bookingApproveDtos = bookingRepository
                             .findAllByItemOwnerAndStartBeforeAndEndAfter(
-                                    owner, LocalDateTime.now(), LocalDateTime.now(), pageRequest);
+                                    owner, LocalDateTime.now(), LocalDateTime.now(), pageRequest).toList();
                     break;
                 case PAST:
                     bookingApproveDtos = bookingRepository
@@ -102,13 +102,13 @@ public class BookingServiceImpl implements BookingService {
                                     owner,
                                     LocalDateTime.now(),
                                     pageRequest
-                            );
+                            ).toList();
                     break;
                 default:
                     bookingApproveDtos = bookingRepository.findAllByItemOwner(
                             owner,
                             pageRequest
-                    );
+                    ).toList();
             }
 
             return bookingApproveDtos
@@ -143,34 +143,34 @@ public class BookingServiceImpl implements BookingService {
             List<Booking> list = new ArrayList<>();
             switch (bookingStatus) {
                 case ALL:
-                    list = bookingRepository.findAllByBooker(booker, pageRequest);
+                    list = bookingRepository.findAllByBooker(booker, pageRequest).toList();
                     break;
                 case FUTURE:
-                    list = bookingRepository.findAllByBookerInFuture(booker, pageRequest);
+                    list = bookingRepository.findAllByBookerInFuture(booker, pageRequest).toList();
                     break;
                 case CURRENT:
-                    list = bookingRepository.findAllByBookerInCurrent(booker, pageRequest);
+                    list = bookingRepository.findAllByBookerInCurrent(booker, pageRequest).toList();
                     break;
                 case PAST:
                     list = bookingRepository.findAllByBookerInPast(
                             booker,
                             LocalDateTime.now(),
                             pageRequest
-                    );
+                    ).toList();
                     break;
                 case REJECTED:
                     list = bookingRepository.findAllByBookerAndStatus(
                             booker,
                             BookingStatus.REJECTED,
                             pageRequest
-                    );
+                    ).toList();
                     break;
                 case WAITING:
                     list = bookingRepository.findAllByBookerAndStatus(
                             booker,
                             BookingStatus.WAITING,
                             pageRequest
-                    );
+                    ).toList();
                     break;
 
 
