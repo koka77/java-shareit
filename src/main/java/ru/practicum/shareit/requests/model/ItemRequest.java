@@ -21,7 +21,7 @@ public class ItemRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Length(max = 1000)
+    @Column(length = 1000)
     private String description;
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
