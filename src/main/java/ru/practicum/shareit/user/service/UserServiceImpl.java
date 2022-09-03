@@ -1,17 +1,15 @@
 package ru.practicum.shareit.user.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.repository.InMemoryUserRepository;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -41,10 +39,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateById(Long userId, UserDto userDto) {
 
-        if (userRepository.findAll().stream().anyMatch(s -> s.getEmail().equals(userDto.getEmail()))) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT);
-        }
-
         User user = userRepository.findById(userId).orElseThrow();
 
         userMapper.updateUserFromDto(userDto, user);
@@ -53,12 +47,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Collection<UserDto> findAll() {
-        return userRepository.findAll().stream().map(userMapper::toUserDto).collect(Collectors.toList());
+        return userRepository.findAll().stream().map(userMapper::toUserDto)
+                .sorted(Comparator.comparing(UserDto::getId))
+                .collect(Collectors.toList());
     }
 
     @Override
     public Optional<UserDto> findById(Long id) {
-        Optional<User> user = Optional.ofNullable(userRepository.findById(id).orElseThrow(() -> new UserNotFoundException()));
-        return Optional.of(userMapper.toUserDto(user.get()));
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException());
+        UserDto userDto = userMapper.toUserDto(user);
+        return Optional.of(userDto);
     }
 }

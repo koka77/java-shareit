@@ -2,9 +2,7 @@ package ru.practicum.shareit.item.mapper;
 
 import org.mapstruct.*;
 import ru.practicum.shareit.item.dto.CommentDto;
-import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Comment;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.requests.mapper.ItemRequestMapper;
 import ru.practicum.shareit.user.mapper.UserMapper;
 
@@ -15,7 +13,7 @@ import java.util.List;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface CommentMapper {
 
-    @Mapping(source="author.name",target="authorName")
+    @Mapping(source = "author.name", target = "authorName")
     CommentDto toCommentDto(Comment comment);
 
     Comment toComment(CommentDto dto);

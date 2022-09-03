@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -20,6 +19,7 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.requests.service.ItemRequestService;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -42,9 +42,11 @@ public class ItemServiceImpl implements ItemService {
     private final BookingRepository bookingRepository;
     private final BookingMapper bookingMapper;
 
+    private final ItemRequestService itemRequestService;
+
 
     @Autowired
-    public ItemServiceImpl(ItemMapper itemMapper, ItemRepository itemRepository, UserRepository userRepository, CommentMapper commentMapper, CommentRepository commentRepository, BookingRepository bookingRepository, BookingMapper bookingMapper) {
+    public ItemServiceImpl(ItemMapper itemMapper, ItemRepository itemRepository, UserRepository userRepository, CommentMapper commentMapper, CommentRepository commentRepository, BookingRepository bookingRepository, BookingMapper bookingMapper, ItemRequestService itemRequestService) {
         this.itemMapper = itemMapper;
         this.itemRepository = itemRepository;
         this.userRepository = userRepository;
@@ -52,6 +54,7 @@ public class ItemServiceImpl implements ItemService {
         this.commentRepository = commentRepository;
         this.bookingRepository = bookingRepository;
         this.bookingMapper = bookingMapper;
+        this.itemRequestService = itemRequestService;
     }
 
     @Override
@@ -59,14 +62,11 @@ public class ItemServiceImpl implements ItemService {
 
         Item item = itemMapper.toItem(itemDto);
         item.setOwner(userRepository.findById(userId).orElseThrow());
+        if (itemDto.getRequestId() != null)
+            item.setRequest(itemRequestService.findById(itemDto.getRequestId(), userId));
         item = itemRepository.save(item);
         ItemDto dto = itemMapper.toItemDto(item);
         return dto;
-    }
-
-    @Override
-    public void deleteById(Long id) {
-        itemRepository.deleteById(id);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class ItemServiceImpl implements ItemService {
                             .isEmpty() ? null : bookingMapper.toBookingDto(bookingRepository
                             .last(itemDto.getId(), ownerId).get(0)));
                 })
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -139,6 +139,17 @@ public class ItemServiceImpl implements ItemService {
         comment.setAuthor(user);
         comment.setCreated(LocalDateTime.now());
         return commentMapper.toCommentDto(commentRepository.save(comment));
+    }
+
+    @Override
+    public List<Item> findByRequestor(User requestor) {
+
+        return itemRepository.findByRequestRequestor(requestor);
+    }
+
+    @Override
+    public List<Item> findByRequestId(Long id) {
+        return itemRepository.findByRequestId(id);
     }
 
     public List<Comment> findCommentsByItem(long itemId) {

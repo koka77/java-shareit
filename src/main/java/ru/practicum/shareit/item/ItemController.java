@@ -26,11 +26,6 @@ public class ItemController {
         return itemService.create(userId, itemDto);
     }
 
-    @DeleteMapping("/{itemId}")
-    public void deleteById(@PathVariable Long itemId) {
-        itemService.deleteById(itemId);
-    }
-
     @PatchMapping("/{itemId}")
     public ItemDto update(@NotBlank @RequestHeader("X-Sharer-User-Id") long userId,
                           @PathVariable Long itemId, @RequestBody ItemDto itemDto) {
@@ -50,7 +45,7 @@ public class ItemController {
 
     @GetMapping("search")
     public Collection<ItemDto> search(@NotBlank @RequestHeader("X-Sharer-User-Id")
-                                          @RequestParam(required = false) String text) {
+                                      @RequestParam(required = false) String text) {
         return itemService.search(text);
     }
 

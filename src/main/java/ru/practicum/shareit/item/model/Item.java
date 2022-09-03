@@ -1,10 +1,10 @@
 package ru.practicum.shareit.item.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import ru.practicum.shareit.requests.ItemRequest;
+import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
@@ -27,11 +27,12 @@ public class Item {
     @Column(name = "is_available")
     private Boolean available;
 
-      @ManyToOne( )
-    @JoinColumn(name = "ID_OWNER", referencedColumnName = "id")
+    @ManyToOne
+    @JoinColumn(name = "ID_OWNER", referencedColumnName = "ID")
     private User owner;
 
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID_REQUEST", referencedColumnName = "id")
+    @JoinColumn(name = "ID_REQUEST", referencedColumnName = "ID")
     private ItemRequest request;
 }
