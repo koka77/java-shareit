@@ -89,6 +89,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     public User checkUser(long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("user not found"));
+        return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException());
     }
 }
