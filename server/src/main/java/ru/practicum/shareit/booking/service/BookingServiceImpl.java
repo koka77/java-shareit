@@ -95,7 +95,7 @@ public class BookingServiceImpl implements BookingService {
         }
         User booker = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException());
         return bookingRepository.findAllByBooker(booker, PageRequest.of(from / size, size,
-                Sort.by(Sort.Direction.DESC, "start")))
+                        Sort.by(Sort.Direction.DESC, "start")))
                 .stream()
                 .map(BookingMapper::toBookingDtoState)
                 .filter(bookingDtoState -> bookingDtoState.getStates().contains(stateEnum))
@@ -110,7 +110,7 @@ public class BookingServiceImpl implements BookingService {
         }
         User owner = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException());
         return bookingRepository.findAllByItemOwner(owner, PageRequest.of(from / size, size,
-                Sort.by(Sort.Direction.DESC, "start")))
+                        Sort.by(Sort.Direction.DESC, "start")))
                 .stream()
                 .map(BookingMapper::toBookingDtoState)
                 .filter(bookingDtoState -> bookingDtoState.getStates().contains(stateEnum))

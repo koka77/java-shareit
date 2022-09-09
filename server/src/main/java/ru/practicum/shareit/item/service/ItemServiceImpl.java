@@ -98,7 +98,7 @@ public class ItemServiceImpl implements ItemService {
             throw new ItemRequestNotGoodParametrsException("from < 0");
         }
         User owner = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException());
-        return itemRepository.findByOwner(owner,  PageRequest.of(from / size, size))
+        return itemRepository.findByOwner(owner, PageRequest.of(from / size, size))
                 .stream()
                 .sorted(Comparator.comparing(Item::getId))
                 .map(item -> setLastAndNextBookingDate(item, ItemMapper.toItemDto(item)))
@@ -114,7 +114,7 @@ public class ItemServiceImpl implements ItemService {
         if (text.equals("")) {
             return new ArrayList<>();
         }
-        return itemRepository.search(text,  PageRequest.of(from / size, size))
+        return itemRepository.search(text, PageRequest.of(from / size, size))
                 .stream()
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
@@ -126,9 +126,9 @@ public class ItemServiceImpl implements ItemService {
                 .filter(booking -> booking.getStart().isBefore(LocalDateTime.now())).collect(Collectors.maxBy(new Comparator<BookingForItem>() {
                     @Override
                     public int compare(BookingForItem o1, BookingForItem o2) {
-                        if (o1.getStart().isBefore(o2.getStart())){
+                        if (o1.getStart().isBefore(o2.getStart())) {
                             return 1;
-                        }else return -1;
+                        } else return -1;
                     }
                 })).orElse(null);
 

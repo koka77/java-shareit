@@ -65,7 +65,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         }
         User user = checkUser(userId);
         return itemRequestRepository.findAllByRequestorIsNot(user, PageRequest
-                .of(from / size, size, Sort.by(Sort.Direction.DESC, "created")))
+                        .of(from / size, size, Sort.by(Sort.Direction.DESC, "created")))
                 .stream()
                 .map(this::createItemRequestDto)
                 .collect(Collectors.toList());

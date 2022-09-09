@@ -21,31 +21,31 @@ public class ItemController {
     }
 
     @PostMapping()
-    public ItemDto create( @RequestHeader("X-Sharer-User-Id") long userId,
-                   @RequestBody ItemDto itemDto) {
+    public ItemDto create(@RequestHeader("X-Sharer-User-Id") long userId,
+                          @RequestBody ItemDto itemDto) {
         log.info("create item");
         return itemService.create(userId, itemDto);
     }
 
     @PatchMapping("/{itemId}")
     public ItemDto update(@RequestHeader("X-Sharer-User-Id") long userId,
-                   @PathVariable long itemId,
-                   @RequestBody ItemDto itemDto) {
+                          @PathVariable long itemId,
+                          @RequestBody ItemDto itemDto) {
         log.info("update item id={}", itemId);
         return itemService.update(userId, itemId, itemDto);
     }
 
     @GetMapping("/{itemId}")
     public ItemDto getItemById(@RequestHeader("X-Sharer-User-Id") long userId,
-                        @PathVariable long itemId) {
+                               @PathVariable long itemId) {
         log.info("get item id={}", itemId);
         return itemService.getItemById(userId, itemId);
     }
 
     @GetMapping()
     public List<ItemDto> getAllItemsByUser(@RequestHeader("X-Sharer-User-Id") long userId,
-                                    @RequestParam(defaultValue = "1") int from,
-                                    @RequestParam(defaultValue = "10") int size) {
+                                           @RequestParam(defaultValue = "1") int from,
+                                           @RequestParam(defaultValue = "10") int size) {
         log.info("get all items from user id={}", userId);
         return itemService.getAllItemsByUser(from, size, userId);
 
@@ -53,16 +53,16 @@ public class ItemController {
 
     @GetMapping("search")
     public List<ItemDto> search(@RequestParam(required = false) String text,
-     @RequestParam(defaultValue = "1") int from,
-    @RequestParam(defaultValue = "10") int size) {
+                                @RequestParam(defaultValue = "1") int from,
+                                @RequestParam(defaultValue = "10") int size) {
         log.info("search text={}", text);
         return itemService.search(from, size, text);
     }
 
     @PostMapping("/{itemId}/comment")
-    public CommentDto createComment( @RequestHeader("X-Sharer-User-Id") long userId,
-                             @PathVariable long itemId,
-                             @RequestBody CommentDto commentDto) {
+    public CommentDto createComment(@RequestHeader("X-Sharer-User-Id") long userId,
+                                    @PathVariable long itemId,
+                                    @RequestBody CommentDto commentDto) {
         log.info("create comment");
         return itemService.createComment(userId, itemId, commentDto);
     }
