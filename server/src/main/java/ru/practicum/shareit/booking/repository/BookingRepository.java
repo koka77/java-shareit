@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking.repositiory;
+package ru.practicum.shareit.booking.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
